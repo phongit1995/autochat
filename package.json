@@ -1,0 +1,25 @@
+{
+  "name": "phong",
+  "version": "1.0.0",
+  "description": "no",
+  "main": "index.js",
+  "scripts": {
+    "test": "no"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phongit1995/autochat.git"
+  },
+  "keywords": [
+    "no"
+  ],
+  "author": "phong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/phongit1995/autochat/issues"
+  },
+  "homepage": "https://github.com/phongit1995/autochat#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
