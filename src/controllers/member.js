@@ -36,7 +36,7 @@ let SendAllMessage = async (req,res)=>{
             }, i * 4000);
         })(i);
     }
-    res.status(200).send(listidfemaleOnline.length * 4);
+   
 
 }
 let  getnumberOnline = async (req,res)=>{
