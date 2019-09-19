@@ -1,28 +1,54 @@
 var request = require('request-promise');
 const cherrio = require('cheerio');
 let index =  async (req,res)=>{
-
+    try {
+        
         let optionlogin = {
             method:"get",
             uri:"https://chimbuom.us/",
             headers:{
-                cookie:"__cfduid:__cfduid=d0125683bb4bfe6ce801a50de014cce281568295825;SESID=l3udt8qkfjarhlj55nuu1l37t4;cuid=MTQ5NDc2;cups=3f7bcb9be0f9d92b3aae909ab0876591"
+                cookie:"__cfduid=d0125683bb4bfe6ce801a50de014cce281568295825;SESID=l3udt8qkfjarhlj55nuu1l37t4;cuid=MTQ5NDc2;cups=3f7bcb9be0f9d92b3aae909ab0876591",
+                'Connection': 'keep-alive',
+            'Accept-Encoding': '',
+            'Accept-Language': 'en-US,en;q=0.8'
             }
         }
          let result = await request(optionlogin);
          let $ = cherrio.load(result);
          console.log( $('#container > div.left > a:nth-child(2) > font > font').text());
-         let infomationfemaleOnline =  await infofemaleOnline();
-         res.render('client/index');
-        // await getInfoMember(198523);
+         let infomationfemaleOnline =  await infoAllfemaleOnline();
+         console.log(infomationfemaleOnline);
+         res.render('client/index' , {infomationfemaleOnline});
+    } catch (error) {
+        console.log( "Lỗi " + error);
+        res.send(error);
+    }
 }   
+let SendAllMessage = async (req,res)=>{
+    let listidOnline = await listidfemaleOnline();
+    console.log(listidOnline);
+    let result = [] ;
+    for(let i=0;i<listidOnline.length;i++){
+        (function(index) {
+            setTimeout(  async()=>{
+               let resultrequest = await  sendMessageToUser(listidOnline[index],req.body.message);
+               result.push(resultrequest);
+            }, i * 4000);
+        })(i);
+    }
+    res.status(200).send(listidfemaleOnline.length * 4);
+
+}
 let  getnumberOnline = async (req,res)=>{
     
     let optionlogin = {
         method:"get",
         uri:"https://chimbuom.us/",
         headers:{
-            cookie:"__cfduid:__cfduid=d0125683bb4bfe6ce801a50de014cce281568295825;SESID=l3udt8qkfjarhlj55nuu1l37t4;cuid=MTQ5NDc2;cups=3f7bcb9be0f9d92b3aae909ab0876591"
+            'Connection': 'keep-alive',
+            'Accept-Encoding': '',
+            'Accept-Language': 'en-US,en;q=0.8',
+            cookie:"__cfduid=d0125683bb4bfe6ce801a50de014cce281568295825;SESID=l3udt8qkfjarhlj55nuu1l37t4;cuid=MTQ5NDc2;cups=3f7bcb9be0f9d92b3aae909ab0876591"
         }
     }
      let result = await request(optionlogin);
@@ -30,12 +56,15 @@ let  getnumberOnline = async (req,res)=>{
      return $('#container > div.left > a:nth-child(2) > font > font').text();
 }
 
-let infofemaleOnline = async ()=>{
+let infoAllfemaleOnline = async ()=>{
     let optionlogin = {
         method:"get",
         uri:"https://chimbuom.us/online.html",
         headers:{
-            cookie:"__cfduid:__cfduid=d0125683bb4bfe6ce801a50de014cce281568295825;SESID=l3udt8qkfjarhlj55nuu1l37t4;cuid=MTQ5NDc2;cups=3f7bcb9be0f9d92b3aae909ab0876591;nu=f"
+            'Connection': 'keep-alive',
+            'Accept-Encoding': '',
+            'Accept-Language': 'en-US,en;q=0.8',
+            cookie:"__cfduid=d0125683bb4bfe6ce801a50de014cce281568295825;SESID=l3udt8qkfjarhlj55nuu1l37t4;cuid=MTQ5NDc2;cups=3f7bcb9be0f9d92b3aae909ab0876591;nu=f"
         }
     }
     let result = await request(optionlogin);
@@ -58,6 +87,8 @@ let infofemaleOnline = async ()=>{
     })
     let infomation = await Promise.all(listpromiseinfomationmember);
     console.log(infomation);
+    return infomation;
+   
 
 }
 let listidfemaleOnline  = async ()=>{
@@ -65,13 +96,15 @@ let listidfemaleOnline  = async ()=>{
         method:"get",
         uri:"https://chimbuom.us/online.html",
         headers:{
-            cookie:"__cfduid:__cfduid=d0125683bb4bfe6ce801a50de014cce281568295825;SESID=l3udt8qkfjarhlj55nuu1l37t4;cuid=MTQ5NDc2;cups=3f7bcb9be0f9d92b3aae909ab0876591;nu=f"
+            'Connection': 'keep-alive',
+            'Accept-Encoding': '',
+            'Accept-Language': 'en-US,en;q=0.8',
+            cookie:"__cfduid=d0125683bb4bfe6ce801a50de014cce281568295825;SESID=l3udt8qkfjarhlj55nuu1l37t4;cuid=MTQ5NDc2;cups=3f7bcb9be0f9d92b3aae909ab0876591;nu=f"
         }
     }
     let result = await request(optionlogin);
     let $ = cherrio.load(result);
     let page = $('#body > div:nth-child(4) > a:nth-child(5)').text();
-    console.log(page);
     let arrayPromiess = [];
     let listLink = [];
     for(let i=1;i<=page;i++){
@@ -90,6 +123,9 @@ let numbermaleOnline = async ()=>{
         method:"get",
         uri:"https://chimbuom.us/online.html",
         headers:{
+            'Connection': 'keep-alive',
+            'Accept-Encoding': '',
+            'Accept-Language': 'en-US,en;q=0.8',
             cookie:"__cfduid:__cfduid=d0125683bb4bfe6ce801a50de014cce281568295825;SESID=l3udt8qkfjarhlj55nuu1l37t4;cuid=MTQ5NDc2;cups=3f7bcb9be0f9d92b3aae909ab0876591;nam=f"
         }
     }
@@ -102,7 +138,10 @@ let idfemaleOnline = async (page)=>{
         method:"get",
         uri:`https://chimbuom.us/users/index.php?act=online&page=${page}`,
         headers:{
-            cookie:"__cfduid:__cfduid=d0125683bb4bfe6ce801a50de014cce281568295825;SESID=l3udt8qkfjarhlj55nuu1l37t4;cuid=MTQ5NDc2;cups=3f7bcb9be0f9d92b3aae909ab0876591;nu=f"
+            'Connection': 'keep-alive',
+            'Accept-Encoding': '',
+            'Accept-Language': 'en-US,en;q=0.8',
+            cookie:"__cfduid=d0125683bb4bfe6ce801a50de014cce281568295825;SESID=l3udt8qkfjarhlj55nuu1l37t4;cuid=MTQ5NDc2;cups=3f7bcb9be0f9d92b3aae909ab0876591;nu=f"
         }
     }
     let arrayid= [];
@@ -126,8 +165,12 @@ let getInfoMember = async (id)=>{
         method:"get",
         uri:`https://chimbuom.us/users/profile.php?user=${id}`,
         headers:{
-            cookie:"__cfduid:__cfduid=d0125683bb4bfe6ce801a50de014cce281568295825;SESID=l3udt8qkfjarhlj55nuu1l37t4;cuid=MTQ5NDc2;cups=3f7bcb9be0f9d92b3aae909ab0876591;nu=f"
-        }
+            'Connection': 'keep-alive',
+            'Accept-Encoding': '',
+            'Accept-Language': 'en-US,en;q=0.8',
+            cookie:"__cfduid=d0125683bb4bfe6ce801a50de014cce281568295825;SESID=l3udt8qkfjarhlj55nuu1l37t4;cuid=MTQ5NDc2;cups=3f7bcb9be0f9d92b3aae909ab0876591;nu=f"
+        },
+       
     }
     let resultRequest = await request(optionlogin);
     let $ = cherrio.load(resultRequest);
@@ -136,6 +179,28 @@ let getInfoMember = async (id)=>{
  
     let feel = $('body > div:nth-child(4) > small').text();
     
-    return {name:name.trim(),feel:feel,id:id};
+    return {name:name,feel:feel,id:id};
 }
-module.exports = {index}
+
+let sendMessageToUser = async (id,message)=>{
+    console.log(id , message);
+    let optionlogin = {
+        method:"post",
+        uri:`https://chimbuom.us/mail1/index.php?act=write&id=${id}&page=1`,
+        headers:{
+            'Connection': 'keep-alive',
+            'Accept-Encoding': '',
+            'Accept-Language': 'en-US,en;q=0.8',
+            cookie:"__cfduid=d0125683bb4bfe6ce801a50de014cce281568295825;SESID=l3udt8qkfjarhlj55nuu1l37t4;cuid=MTQ5NDc2;cups=3f7bcb9be0f9d92b3aae909ab0876591;nu=f",
+            referer:`https://chimbuom.us/mail/index.php?act=write&id=${id}`
+        },
+        form:{
+            text:message ,
+            submit:''
+        }
+    }
+    let resultRequest = await request(optionlogin);
+    return resultRequest ;
+
+}
+module.exports = {index,SendAllMessage}

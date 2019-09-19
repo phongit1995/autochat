@@ -6,4 +6,5 @@ router.get("/login",(req,res)=>{
     res.render("client/login");
 })
 router.post("/",memberController.index);
+router.post("/send-message/female", memberController.SendAllMessage);
 module.exports = router;
