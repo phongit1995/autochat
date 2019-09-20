@@ -1,4 +1,5 @@
 var request = require('request-promise');
+require('dotenv').config();
 const cherrio = require('cheerio');
 let index =  async (req,res)=>{
     try {
@@ -48,7 +49,7 @@ let  getnumberOnline = async (req,res)=>{
             'Connection': 'keep-alive',
             'Accept-Encoding': '',
             'Accept-Language': 'en-US,en;q=0.8',
-            cookie:"__cfduid=d0125683bb4bfe6ce801a50de014cce281568295825;SESID=l3udt8qkfjarhlj55nuu1l37t4;cuid=MTQ5NDc2;cups=3f7bcb9be0f9d92b3aae909ab0876591"
+            cookie:process.env.COOKIE
         }
     }
      let result = await request(optionlogin);
@@ -99,7 +100,7 @@ let listidfemaleOnline  = async ()=>{
             'Connection': 'keep-alive',
             'Accept-Encoding': '',
             'Accept-Language': 'en-US,en;q=0.8',
-            cookie:"__cfduid=d0125683bb4bfe6ce801a50de014cce281568295825;SESID=l3udt8qkfjarhlj55nuu1l37t4;cuid=MTQ5NDc2;cups=3f7bcb9be0f9d92b3aae909ab0876591;nu=f"
+            cookie:process.env.COOKIE
         }
     }
     let result = await request(optionlogin);
@@ -126,7 +127,7 @@ let numbermaleOnline = async ()=>{
             'Connection': 'keep-alive',
             'Accept-Encoding': '',
             'Accept-Language': 'en-US,en;q=0.8',
-            cookie:"__cfduid:__cfduid=d0125683bb4bfe6ce801a50de014cce281568295825;SESID=l3udt8qkfjarhlj55nuu1l37t4;cuid=MTQ5NDc2;cups=3f7bcb9be0f9d92b3aae909ab0876591;nam=f"
+            cookie:"__cfduid=da3e8ed089e7fb41123e8cc972c5c90a71568875699;SESID=n64ivkljpnqa193vagb1k48b04;cuid=MzAxMjM5;cups=3f7bcb9be0f9d92b3aae909ab0876591;nu=f"
         }
     }
     let result = await request(optionlogin);
@@ -141,7 +142,7 @@ let idfemaleOnline = async (page)=>{
             'Connection': 'keep-alive',
             'Accept-Encoding': '',
             'Accept-Language': 'en-US,en;q=0.8',
-            cookie:"__cfduid=d0125683bb4bfe6ce801a50de014cce281568295825;SESID=l3udt8qkfjarhlj55nuu1l37t4;cuid=MTQ5NDc2;cups=3f7bcb9be0f9d92b3aae909ab0876591;nu=f"
+            cookie:process.env.COOKIE
         }
     }
     let arrayid= [];
@@ -168,7 +169,7 @@ let getInfoMember = async (id)=>{
             'Connection': 'keep-alive',
             'Accept-Encoding': '',
             'Accept-Language': 'en-US,en;q=0.8',
-            cookie:"__cfduid=d0125683bb4bfe6ce801a50de014cce281568295825;SESID=l3udt8qkfjarhlj55nuu1l37t4;cuid=MTQ5NDc2;cups=3f7bcb9be0f9d92b3aae909ab0876591;nu=f"
+            cookie:process.env.COOKIE
         },
        
     }
@@ -191,7 +192,7 @@ let sendMessageToUser = async (id,message)=>{
             'Connection': 'keep-alive',
             'Accept-Encoding': '',
             'Accept-Language': 'en-US,en;q=0.8',
-            cookie:"__cfduid=d0125683bb4bfe6ce801a50de014cce281568295825;SESID=l3udt8qkfjarhlj55nuu1l37t4;cuid=MTQ5NDc2;cups=3f7bcb9be0f9d92b3aae909ab0876591;nu=f",
+            cookie:process.env.COOKIE,
             referer:`https://chimbuom.us/mail/index.php?act=write&id=${id}`
         },
         form:{
