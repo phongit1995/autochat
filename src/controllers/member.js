@@ -2,6 +2,7 @@ var request = require('request-promise');
 require('dotenv').config();
 const cherrio = require('cheerio');
 let index =  async (req,res)=>{
+
     try {
         
         let optionlogin = {
@@ -24,8 +25,11 @@ let index =  async (req,res)=>{
         console.log( "Lỗi " + error);
         res.send(error);
     }
+   
 }   
 let SendAllMessage = async (req,res)=>{
+
+
     let listidOnline = await listidfemaleOnline();
     console.log(listidOnline);
     let result = [] ;
@@ -34,7 +38,7 @@ let SendAllMessage = async (req,res)=>{
             setTimeout(  async()=>{
                let resultrequest = await  sendMessageToUser(listidOnline[index],req.body.message);
                result.push(resultrequest);
-            }, i * 4000);
+            }, i * 5500);
         })(i);
     }
    
@@ -135,6 +139,7 @@ let numbermaleOnline = async ()=>{
     return $('#body > div:nth-child(4) > a:nth-child(5)').text();
 }
 let idfemaleOnline = async (page)=>{
+
     let optionlogin = {
         method:"get",
         uri:`https://chimbuom.us/users/index.php?act=online&page=${page}`,
@@ -184,23 +189,28 @@ let getInfoMember = async (id)=>{
 }
 
 let sendMessageToUser = async (id,message)=>{
-    console.log(id , message);
+    console.log(process.env.COOKIE , id ,message);
     let optionlogin = {
         method:"post",
-        uri:`https://chimbuom.us/mail1/index.php?act=write&id=${id}&page=1`,
+        uri:`https://chimbuom.us/request.php?id=${id}&act=send_mail`,
         headers:{
+            'Host': 'chimbuom.us',
+            'Accept': '*/*',
             'Connection': 'keep-alive',
-            'Accept-Encoding': '',
             'Accept-Language': 'en-US,en;q=0.8',
-            cookie:process.env.COOKIE,
-            referer:`https://chimbuom.us/mail/index.php?act=write&id=${id}`
+            'origin':'https://chimbuom.us',
+            'cookie':process.env.COOKIE,
+            'referer':`https://chimbuom.us/mail/index.php?act=write&id=${id}` ,
+            'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) coc_coc_browser/80.0.182 Chrome/74.0.3729.182 Safari/537.36'
         },
         form:{
             text:message ,
-            submit:''
+            token:''
         }
     }
     let resultRequest = await request(optionlogin);
+    console.log(`Send Thành Công  tới: ${id}` + resultRequest);
     return resultRequest ;
 
 }
