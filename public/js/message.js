@@ -2,11 +2,11 @@
 function sendmessage(){
     let content = $('#contentmessage');
     let message = content.val();
-    content.val("");
+    let type = $ ("input[name=typesend]:checked").val();
     $.ajax({
         method:"post",
-        url:"/send-message/female",
-        data:{message:message},
+        url:"/send-all-message",
+        data:{message:message,type:type},
         success:(data)=>{
            alert("Tin nhắn Sẽ Gửi Sau:" + data + " Giây");
         }

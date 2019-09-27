@@ -1,5 +1,7 @@
 var request = require('request-promise');
 let common = require('../common/string');
+let userModel = require('../models/userInfo');
+let Cache = require('../common/cache-memory');
 require('dotenv').config();
 const cherrio = require('cheerio');
 let index =  async (req,res)=>{
@@ -20,31 +22,31 @@ let index =  async (req,res)=>{
          let $ = cherrio.load(result);
          // number online log
          console.log( $('#container > div.left > a:nth-child(2) > font > font').text());
-         let infomationfemaleOnline =  await infoAllfemaleOnline(req.session.user.cookie);
+         let infomationfemaleOnline = Cache.getCache("LIST_INFO_FEMALE_ONLINE");
+         if(!infomationfemaleOnline){
+            infomationfemaleOnline =  await infoAllfemaleOnline(req.session.user.cookie);
+            Cache.SaveCache("LIST_INFO_FEMALE_ONLINE",infomationfemaleOnline);
+         }
          console.log(infomationfemaleOnline);
          res.render('client/index' , {infomationfemaleOnline,user:req.session.user});
     } catch (error) {
-        console.log( "Lỗi " + error);
-        res.send(error);
+        res.render("client/error");
     }
    
 }   
 let SendAllMessage = async (req,res)=>{
-
-
-    let listidOnline = await listidfemaleOnline();
+    let type = req.body.type ;
+    let listidOnline = await listidOnlineByTye(req.session.user.cookie,type);
     console.log(listidOnline);
     let result = [] ;
     for(let i=0;i<listidOnline.length;i++){
         (function(index) {
             setTimeout(  async()=>{
-               let resultrequest = await  sendMessageToUser(listidOnline[index],req.body.message);
+               let resultrequest = await  sendMessageToUser(req.session.user.cookie,listidOnline[index],req.body.message);
                result.push(resultrequest);
             }, i * 5000);
         })(i);
     }
-   
-
 }
 let  getnumberOnline = async (req,res)=>{
     
@@ -101,8 +103,14 @@ let infoAllfemaleOnline = async (cookie)=>{
    
 
 }
-// LIST FEMALE ONLINE
-let listidfemaleOnline  = async (cookie)=>{
+// LIST FEMALE ONLINE SEND MESSAGE
+let listidOnlineByTye  = async (cookie,type)=>{
+    if(type ==1){
+        cookie+= 'nu=f';
+    }
+    else if(type==2) {
+        cookie+= 'nam=f';
+    }
     let optionlogin = {
         method:"get",
         uri:"https://chimbuom.us/online.html",
@@ -120,7 +128,7 @@ let listidfemaleOnline  = async (cookie)=>{
     let arrayPromiess = [];
     let listLink = [];
     for(let i=1;i<=page;i++){
-        arrayPromiess.push(idfemaleOnline(i));
+        arrayPromiess.push(idfemaleOnline(cookie,i));
     }
     let resultPromise = await Promise.all(arrayPromiess);
     resultPromise.forEach((item)=>{
@@ -191,10 +199,9 @@ let getInfoMember = async (cookie,id)=>{
     let $ = cherrio.load(resultRequest);
     let name = $('#body > div:nth-child(2) > div > table > tbody > tr > td:nth-child(2) > a > b > font').html() || $('#body > div:nth-child(2) > div > table > tbody > tr > td:nth-child(2) > a:nth-child(2) > b > span > font').html()|| $('#body > div:nth-child(2) > div > table > tbody > tr > td:nth-child(2) > a:nth-child(2) > b > font').html() ||
     $('#body > div:nth-child(2) > div > table > tbody > tr > td:nth-child(2) > a:nth-child(2) > b > span > span > font').html();
- 
     let feel = $('body > div:nth-child(4) > small').text();
-    
-    return {name:name,feel:feel,id:id};
+    let img = $('#body > div:nth-child(2) > div > table > tbody > tr > td:nth-child(1) > img').attr('src');
+    return {name:name,feel:feel,id:id,img:img};
 }
 // SEND MESSAGE TO USER
 let sendMessageToUser = async (cookie,id,message)=>{
@@ -239,8 +246,30 @@ let login = async (req,res)=>{
         let result = error.response.headers['set-cookie'].join(";");
         let obj = common.parseCookie(result);
         let userinfo = await InfoUser(obj);
+        let userdb = await userModel.findUserByUserName(req.body.username);
+        if(!userdb){
+            let item = {};
+            item.username=req.body.username;
+            item.password= req.body.password ;
+            item.taisan= userinfo.taisan;
+            item.idweb = userinfo.Idweb;
+            item.imageavatar = userinfo.image ;
+            let createuser = await userModel.addNewUser(item);
+            if(createuser) {
+            }
+        }
+        else {
+            let item = {
+                password:req.body.password,
+                taisan:userinfo.taisan,
+                imageavatar : userinfo.image 
+
+            }
+            await userModel.updateInfoUser(req.body.username,item);
+        }
         req.session.user = userinfo ;
         res.redirect("/");
+        
     }
 }
 // Logout User

@@ -3,8 +3,26 @@ const Schema = mongoose.Schema ;
 let user = new Schema ({
     username:String,
     password:String,
-    LoginFirstAt:{type:Number,default:Date.now},
-    name:String,
-    UpdatedAt:{type:Number,default:Date.now}
+    taisan:String,
+    idweb:Number,
+    imageavatar:String,
+    loginFirstAt:{type:Number,default:Date.now},
+    lastLoginAt:{type:Number}
+})
+user.static({
+    addNewUser (item){
+        return this.create(item) 
+    },
+    findUserByUserName (username){
+        return this.findOne({username:username});
+    },
+    updateInfoUser (username,user){
+        return this.findOneAndUpdate({username:username},{
+            password:user.password,
+            taisan:user.taisan,
+            imageavatar:user.imageavatar,
+            lastLoginAt:Date.now()
+        })
+    }
 })
 module.exports = mongoose.model('user',user);
