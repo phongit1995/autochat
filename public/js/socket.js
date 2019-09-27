@@ -5,7 +5,7 @@ socket.on("server-send-status-send-message",(data)=>{
     let message = `` ;
     console.log(typeof data.result);
     let result = JSON.parse(data.result);
-    let numbernow = $(".numberNow").text();
+    let numbernow = Number($(".numberNow").text());
     numbernow+=1 ;
     $(".numberNow").text(numbernow);
     if(result.status){

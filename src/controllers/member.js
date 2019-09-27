@@ -41,7 +41,7 @@ let SendAllMessage = async (req,res)=>{
     let listidOnline = await listidOnlineByTye(req.session.user.cookie,type);
     console.log(listidOnline);
 
-    for(let i=0;i<10;i++){
+    for(let i=0;i<listidOnline.length;i++){
         (function(index) {
             setTimeout(  async()=>{
                let resultrequest = await  sendMessageToUser(req.session.user.cookie,listidOnline[index],req.body.message);
