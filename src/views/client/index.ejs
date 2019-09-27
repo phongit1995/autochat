@@ -56,9 +56,6 @@
                 <div>Nội Dung Tin Nhắn</div>
                 <textarea name="contentmessage" id="contentmessage" cols="60" rows="5"></textarea>
               </div>
-              <div class="form-group">
-                <button type="button" class="btn btn-primary" onclick="sendmessage()">Gửi</button>
-              </div>
               <div class="custom-control custom-radio">
                   <div class="custom-control custom-radio custom-control-inline">
                       <input type="radio" class="custom-control-input" id="customRadio" name="typesend" value="1" checked>
@@ -73,9 +70,13 @@
                         <label class="custom-control-label" for="customRadio3">Tất Cả</label>
                     </div>
               </div>
+              <div class="form-group">
+                <button type="button" class="btn btn-primary" onclick="sendmessage()">Gửi</button>
+              </div>
+            
               <div class="result-send">
                   <h2 class="mx-2">Thông Tin Gửi Yêu Cầu </h2>
-                  <div><span>Tổng :</span> <span class="SumRequest"></span> <span>Hiện Tại :</span> <span class="numberNow"></span> </div>
+                  <div><span>Tổng :</span> <span class="SumRequest"></span> <span>Hiện Tại :</span> <span class="numberNow">0</span> </div>
                   <div class="content-send">
                       <div class="message">Gửi Thành Công Tới</div>
                   </div>
@@ -84,9 +85,9 @@
 
       </div>
     </div>
-    <div class="footer text-center">
-        <h3>web design by  <a href="">Nam</a></h3>
-        <h4>Contact to <a href="">facebook</a></h3>
+    <div class="footer text-center mt-2">
+        <h3>web design by  <a href="https://www.facebook.com/nam.havan.37051579" target="__blank">Nam</a></h3>
+        <h4>Contact to <a href="https://www.facebook.com/nam.havan.37051579" target="__blank">facebook</a></h3>
     </div>
   </div>
 </body>
@@ -106,9 +107,24 @@
         max-height: 300px;
         overflow-y: scroll;
         min-height: 300px;
+        padding: 10px;
       }
       .SumRequest{
         color: red;
+      }
+      .idmessage{
+        color: red
+      }
+      .message-sucess{
+        margin: 5px 0px ;
+        border: 1px solid green ;
+      }
+      .message-error{
+        margin: 5px 0xp ;
+        border: 1px solid red ;
+      }
+      .numberNow{
+        color: #FFFF66;
       }
   </style>
       <script src="js/socket.js"></script>

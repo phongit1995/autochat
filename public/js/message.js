@@ -11,7 +11,7 @@ function sendmessage(){
         url:"/send-all-message",
         data:{message:message,type:type},
         success:(data)=>{
-            $(".SumRequest").text(data);
+            $(".SumRequest").text(data.count);
             $(".content-send").empty();
            console.log(data);
         }
