@@ -29,6 +29,8 @@ let index =  async (req,res)=>{
          }
          console.log(infomationfemaleOnline);
          res.render('client/index' , {infomationfemaleOnline,user:req.session.user});
+        
+
     } catch (error) {
         res.render("client/error");
     }
@@ -38,15 +40,19 @@ let SendAllMessage = async (req,res)=>{
     let type = req.body.type ;
     let listidOnline = await listidOnlineByTye(req.session.user.cookie,type);
     console.log(listidOnline);
-    let result = [] ;
-    for(let i=0;i<listidOnline.length;i++){
+
+    for(let i=0;i<10;i++){
         (function(index) {
             setTimeout(  async()=>{
                let resultrequest = await  sendMessageToUser(req.session.user.cookie,listidOnline[index],req.body.message);
-               result.push(resultrequest);
-            }, i * 5000);
+               let obj = {};
+               obj.id = listidOnline[index];
+               obj.result = resultrequest;
+               req.io.sockets.emit("server-send-status-send-message",obj);
+            }, i * 5500);
         })(i);
     }
+    res.status(200).json({count:listidOnline.length});
 }
 let  getnumberOnline = async (req,res)=>{
     
@@ -205,7 +211,7 @@ let getInfoMember = async (cookie,id)=>{
 }
 // SEND MESSAGE TO USER
 let sendMessageToUser = async (cookie,id,message)=>{
-    console.log(process.env.COOKIE , id ,message);
+    console.log(cookie, id ,message);
     let optionlogin = {
         method:"post",
         uri:`https://chimbuom.us/request.php?id=${id}&act=send_mail`,

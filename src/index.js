@@ -7,6 +7,9 @@ const mongoose = require('mongoose');
 // Router
 let router = require('./routers/index');
 let app = express();
+// socket IO 
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 mongoose.connect(process.env.MONGO_DB, {useNewUrlParser: true,useUnifiedTopology: true ,useFindAndModify: false  },(erro)=>{
   if(erro){
     console.log("Lỗi " + erro);
@@ -14,6 +17,10 @@ mongoose.connect(process.env.MONGO_DB, {useNewUrlParser: true,useUnifiedTopology
     console.log("Connected to mongodb " + process.env.MONGO_DB);
   }
 });
+app.use((req,res,next)=>{
+  req.io=io;
+  next();
+})
 app.use(express.static(__dirname + './../public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('views',path.join(__dirname,'/views'));
@@ -27,6 +34,10 @@ app.use(session({
     }
   }))
 app.use('/',router);
-app.listen(process.env.PORT,()=>{
+server.listen(process.env.PORT,()=>{
     console.log(" website stated in port:" + process.env.PORT);
 });
+
+io.on("connection",(socket)=>{
+  
+})
