@@ -4,6 +4,6 @@ let imagewebsite = new Schema ({
     userID: String ,
     idImage:String,
     linkImage:String,
-    newNameImage:String,
+    newNameImage:String
 })
 module.exports = mongoose.model('imagewebsite',imagewebsite);

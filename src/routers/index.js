@@ -2,11 +2,15 @@ const express = require('express');
 let router = express.Router();
 let memberController = require('../controllers/member');
 let imagedowload = require('../controllers/imagewebsite');
-router.get("/",memberController.index)
+let middlware = require('../middlware/checklogin');
+router.get("/", middlware.checkuser,memberController.index)
 router.get("/login",(req,res)=>{
     res.render("client/login");
 })
-router.post("/",memberController.index);
-router.post("/send-message/female", memberController.SendAllMessage);
+// router.post("/",memberController.login);
+router.post("/send-message/female", middlware.checkuser,memberController.SendAllMessage);
 router.get("/dowloadimage",imagedowload.dowload);
+router.post("/login",memberController.login);
+router.get("/dangnhap",memberController.login);
+router.get("/logout",middlware.checkuser,memberController.logout)
 module.exports = router;
