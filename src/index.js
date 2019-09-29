@@ -30,7 +30,7 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     cookie: {
-      maxAge:1000*60*3
+      maxAge:1000*60*60*12
     }
   }))
 app.use('/',router);
