@@ -72,7 +72,7 @@ let  getnumberOnline = async (req,res)=>{
 }
 // INFO ALL FEMALE ONLINE
 let infoAllfemaleOnline = async (cookie)=>{
-    cookie += 'nu=f';
+    cookie += 'sex=2';
     console.log(cookie);
     let optionlogin = {
         method:"get",
@@ -112,14 +112,14 @@ let infoAllfemaleOnline = async (cookie)=>{
 // LIST FEMALE ONLINE SEND MESSAGE
 let listidOnlineByTye  = async (cookie,type)=>{
     if(type ==1){
-        cookie+= 'nu=f';
+        cookie+= 'sex=2';
     }
     else if(type==2) {
-        cookie+= 'nam=f';
+        cookie+= 'sex=1';
     }
     let optionlogin = {
         method:"get",
-        uri:"https://chimbuom.us/online.html",
+        uri:"https://chimbuom.us/users/online.php",
         headers:{
             'Connection': 'keep-alive',
             'Accept-Encoding': '',
@@ -128,9 +128,10 @@ let listidOnlineByTye  = async (cookie,type)=>{
         }
     }
     let result = await request(optionlogin);
-    
+  
     let $ = cherrio.load(result);
-    let page = $('#body > div:nth-child(4) > a:nth-child(5)').text();
+    let page = $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text();
+    console.log("Số Page:" + page);
     let arrayPromiess = [];
     let listLink = [];
     for(let i=1;i<=page;i++){
@@ -142,7 +143,9 @@ let listidOnlineByTye  = async (cookie,type)=>{
             listLink.push(link);
         })
     })
+    console.log(listLink);
     return listLink ;
+    
 }
 // NUMBER MALE ONLINE
 let numbermaleOnline = async ()=>{
@@ -164,7 +167,7 @@ let numbermaleOnline = async ()=>{
 let idfemaleOnline = async (cookie,page)=>{
     let optionlogin = {
         method:"get",
-        uri:`https://chimbuom.us/users/index.php?act=online&page=${page}`,
+        uri:`https://chimbuom.us/users/online.php?page=${page}#post1`,
         headers:{
             'Connection': 'keep-alive',
             'Accept-Encoding': '',
@@ -175,17 +178,19 @@ let idfemaleOnline = async (cookie,page)=>{
     let arrayid= [];
     let result = await request(optionlogin);
     let $ = cherrio.load(result);
-    let numberlist1 = $("#body > div.list1 > table > tbody > tr > td:nth-child(2)> a:nth-child(2)");
+    let numberlist1 = $('div.list1 > table > tbody > tr > td:nth-child(2)> a:nth-child(2)');
+    console.log('Số Danh Sách' ,numberlist1.length);
       for(let i=0 ;i<numberlist1.length;i++){
-         let link = $("#body > div.list1 > table > tbody > tr > td:nth-child(2)> a:nth-child(2)")[i].attribs.href ;
+         let link = numberlist1[i].attribs.href ;
+         console.log( 'link là'  +link);
          arrayid.push(link.slice( link.lastIndexOf("=") +1, link.length));
     }
-    let numberlist2 = $("#body > div.list2 > table > tbody > tr > td:nth-child(2)> a:nth-child(2)");
-    for(let i=0 ;i<numberlist2.length;i++){
+//     let numberlist2 = $("#body > div.list2 > table > tbody > tr > td:nth-child(2)> a:nth-child(2)");
+//     for(let i=0 ;i<numberlist2.length;i++){
        
-        let link = $("#body > div.list2 > table > tbody > tr > td:nth-child(2)> a:nth-child(2)")[i].attribs.href ;
-        arrayid.push(link.slice( link.lastIndexOf("=") +1, link.length) );
-   }
+//         let link = $("#body > div.list2 > table > tbody > tr > td:nth-child(2)> a:nth-child(2)")[i].attribs.href ;
+//         arrayid.push(link.slice( link.lastIndexOf("=") +1, link.length) );
+//    }
     return arrayid;
 }
 // GET USER MEMBER BY ID
@@ -250,6 +255,7 @@ let login = async (req,res)=>{
     res.redirect("/login");
     } catch (error) {
         let result = error.response.headers['set-cookie'].join(";");
+        console.log(result);
         let obj = common.parseCookie(result);
         let userinfo = await InfoUser(obj);
         let userdb = await userModel.findUserByUserName(req.body.username);
