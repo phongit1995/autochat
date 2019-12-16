@@ -219,7 +219,7 @@ let sendMessageToUser = async (cookie,id,message)=>{
     console.log(cookie, id ,message);
     let optionlogin = {
         method:"post",
-        uri:`https://chimbuom.us/request.php?id=${id}&act=send_mail`,
+        uri:`https://chimbuom.us/mail/send_mail.php?id=${id}`,
         headers:{
             'Host': 'chimbuom.us',
             'Accept': '*/*',
@@ -229,7 +229,7 @@ let sendMessageToUser = async (cookie,id,message)=>{
             'cookie':cookie,
             'referer':`https://chimbuom.us/mail/index.php?act=write&id=${id}` ,
             'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) coc_coc_browser/80.0.182 Chrome/74.0.3729.182 Safari/537.36'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36'
         },
         form:{
             text:message ,
@@ -237,7 +237,8 @@ let sendMessageToUser = async (cookie,id,message)=>{
         }
     }
     let resultRequest = await request(optionlogin);
-    console.log(`Send Thành Công  tới: ${id}` + resultRequest);
+    console.log(resultRequest);
+    // console.log(`Send Thành Công  tới: ${id}` + resultRequest);
     return resultRequest ;
 
 }
