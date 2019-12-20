@@ -130,7 +130,8 @@ let listidOnlineByTye  = async (cookie,type)=>{
     let result = await request(optionlogin);
   
     let $ = cherrio.load(result);
-    let page = $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text();
+    
+    let page =  Number.isInteger( $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text()) ?  $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text(): $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(4)').text();
     console.log("Số Page:" + page);
     let arrayPromiess = [];
     let listLink = [];
