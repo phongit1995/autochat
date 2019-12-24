@@ -130,8 +130,13 @@ let listidOnlineByTye  = async (cookie,type)=>{
     let result = await request(optionlogin);
   
     let $ = cherrio.load(result);
+<<<<<<< HEAD
     console.log($('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text());
     let page =  $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text() ;
+=======
+    
+    let page = $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text() ;
+>>>>>>> 8596bc1e17081940084d4f304aafb9a1870749a2
     console.log("Số Page:" + page);
     let arrayPromiess = [];
     let listLink = [];
