@@ -130,8 +130,8 @@ let listidOnlineByTye  = async (cookie,type)=>{
     let result = await request(optionlogin);
   
     let $ = cherrio.load(result);
-    
-    let page =  Number.isInteger( $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text()) ?  $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text(): $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(4)').text();
+    console.log($('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text());
+    let page =  $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text() ;
     console.log("Số Page:" + page);
     let arrayPromiess = [];
     let listLink = [];
@@ -310,16 +310,17 @@ let InfoUser =  async(cookie)=>{
     let $ = cherrio.load(result);
     let username = $("#container > div.menu > table > tbody > tr > td:nth-child(2) > b > font").text();
     obj.username = username ;
-    let gender = $("body > div:nth-child(7) > font:nth-child(2)").text();
+    let gender = $("body > div:nth-child(10) > font:nth-child(2)").text();
     obj.gender = gender;
-    let lever = $("body > div:nth-child(7) > font:nth-child(5)").text();
+    let lever = $("body > div:nth-child(10) > font:nth-child(5)").text();
     obj.lever = lever ;
-    let taisan = $("body > div:nth-child(7) > font:nth-child(9)").text();
+    let taisan = $("body > div:nth-child(10) > font:nth-child(9)").text();
     obj.taisan= taisan;
-    let Idweb = $("#body > div.left > div > span:nth-child(2) > font").text();
+    let Idweb = $("body > div:nth-child(4) > div > span:nth-child(2) > font").text();
     obj.Idweb = Idweb ;
     let image = $('#container > div.menu > table > tbody > tr > td:nth-child(1) > img').attr('src') ;
     obj.image = image ;
+    console.log(obj);
     return obj ;
 
 }

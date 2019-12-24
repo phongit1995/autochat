@@ -7,7 +7,8 @@ let user = new Schema ({
     idweb:Number,
     imageavatar:String,
     loginFirstAt:{type:Number,default:Date.now},
-    lastLoginAt:{type:Number}
+    lastLoginAt:{type:Number},
+    type:Number
 })
 user.static({
     addNewUser (item){
@@ -16,7 +17,7 @@ user.static({
     findUserByUserName (username){
         return this.findOne({username:username});
     },
-    updateInfoUser (username,user){
+    updateInfoUser(username,user){
         return this.findOneAndUpdate({username:username},{
             password:user.password,
             taisan:user.taisan,
