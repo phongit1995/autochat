@@ -17,4 +17,20 @@ router.post('/checkUser',async(req,res)=>{
     }
     
 })
+router.post('/sendtim',async(req,res)=>{
+    try {
+        let {id,numberTim} = req.body ;
+        let result = await buffTimControllers.sendTimToUser(id,numberTim);
+        console.log(result);
+        return res.json({
+            error:"",
+            data:"Thành Công"
+        })
+    } catch (error) {
+        return res.json({
+            error:error
+        })
+    }
+    
+})
 module.exports = router ;
