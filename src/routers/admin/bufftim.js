@@ -38,4 +38,24 @@ router.post('/sendtim',async(req,res)=>{
     }
     
 })
+router.get('/accounterror',async(req,res)=>{
+    let listUser = await UserModels.find({type:1,idweb:null});
+    res.render('admin/listerroraccount',{UserList:listUser});
+})
+router.post('/changinfo',async(req,res)=>{
+    console.log(req.body);
+    let {username,idweb} = req.body;
+    let resultUpdate = await UserModels.updateOne({username},{idweb});
+    if(resultUpdate.n>0){
+        return res.json({
+            error:""
+        })
+    }
+    else{
+        return res.json({
+            error:"Có Lỗi Xảy Ra"
+        })
+    }
+
+;})
 module.exports = router ;

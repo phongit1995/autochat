@@ -70,4 +70,35 @@ $(document).ready(function(){
             }
         })
     })
+    $('.changeId').click(function(){
+        let username = $('#usernameEdit').val();
+        let idweb = $('#idwebEdit').val();
+        console.log(username,idweb);
+        $.ajax({
+            url:"/admin/bufftim/changinfo",
+            method:'post',
+            data:{
+                username,
+                idweb
+            },
+            success:function(data){
+                if(data.error==""){
+                    Swal.fire(
+                        'Thành Công!',
+                        'Cập Nhật Thành Công',
+                        'success'
+                      )
+                      $('#usernameEdit').val("");
+                      $('#idwebEdit').val("");
+                }
+                else{
+                    return Swal.fire(
+                        'Lỗi!',
+                        'Có Lỗi Xảy Ra',
+                        'error'
+                      )
+                }
+            }
+        })
+    })
 })

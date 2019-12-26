@@ -37,7 +37,7 @@ let sendTimToUser = async (idUser,numberTim)=>{
         return result ;
         
     } catch (error) {
-        return  new Error (error)
+        return  new Error (error);
     }
 }
 let BuffTimUser =async(idUser,password,idTo)=>{
