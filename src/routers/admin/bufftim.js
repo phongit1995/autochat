@@ -3,7 +3,7 @@ let router = express.Router();
 let buffTimControllers = require('./../../controllers/admin/bufftim');
 let UserModels = require('./../../models/userInfo');
 router.get('/',async(req,res)=>{
-    let listUser = await UserModels.find({type:1});
+    let listUser = await UserModels.find({type:1,idweb:{$ne:null}});
     console.log(listUser.length);
     res.render('admin/bufftim',{UserNumber:listUser.length});
 })
