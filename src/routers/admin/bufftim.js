@@ -21,14 +21,19 @@ router.post('/sendtim',async(req,res)=>{
     try {
         let {id,numberTim} = req.body ;
         let result = await buffTimControllers.sendTimToUser(id,numberTim);
-        console.log(result);
+        if(result instanceof Error){
+            return res.json({
+                error:result
+            })
+        }
         return res.json({
             error:"",
             data:"Thành Công"
         })
     } catch (error) {
+        console.log('Error'+ error);
         return res.json({
-            error:error
+            error:result
         })
     }
     

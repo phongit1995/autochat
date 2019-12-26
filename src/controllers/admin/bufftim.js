@@ -23,6 +23,7 @@ let sendTimToUser = async (idUser,numberTim)=>{
            idweb:{$nin:sublistnotIn,$ne:null}
 
         })
+        console.log(UserList.length , numberTim)
         if(UserList.length<numberTim){
             throw new Error('Vượt Quá Số Khả Năng Like');
         }
@@ -36,7 +37,7 @@ let sendTimToUser = async (idUser,numberTim)=>{
         return result ;
         
     } catch (error) {
-        return  new Error("Lỗi");
+        return  new Error (error)
     }
 }
 let BuffTimUser =async(idUser,password,idTo)=>{
