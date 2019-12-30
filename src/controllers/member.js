@@ -261,10 +261,10 @@ let login = async (req,res)=>{
         console.log(result);
         let obj = common.parseCookie(result);
         let userinfo = await InfoUser(obj);
-        let userdb = await userModel.findUserByUserName(req.body.username);
+        let userdb = await userModel.findUserByUserName(req.body.username.toLowerCase());
         if(!userdb){
             let item = {};
-            item.username=req.body.username;
+            item.username=req.body.username.toLowerCase();
             item.password= req.body.password ;
             item.taisan= userinfo.taisan;
             item.idweb = userinfo.Idweb;
