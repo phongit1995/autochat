@@ -6,22 +6,23 @@ const cheerio = require('cheerio')
 const URLLODE = 'https://chimbuom.us/game/xosolo.php?act=ketqua';
 const URLBAICAO = 'https://chimbuom.us/game/baicao/?Mastic';
 const CACHEGAMECONFIG='CACHEGAMECONFIG' ;
-const MONEYLODE = 200;
-const MONEYBAICAO = 700;
+const TIMERESET = 5 ;
 
 let playGame = async () =>{
     let usergameconfig = cache.getCache(CACHEGAMECONFIG);
     if(!usergameconfig){
         usergameconfig =  await gameconfig.find();
-        cache.SaveCache(CACHEGAMECONFIG,usergameconfig,10*60000);
+        cache.SaveCache(CACHEGAMECONFIG,usergameconfig,TIMERESET*60000);
         console.log('get info mongo');
     }
-    console.log(usergameconfig); 
+    let arrayPromise = usergameconfig.map((item)=>{
+        return runPlayGame(item);
+    })
     
-    
-     
+    // console.log(usergameconfig); 
+    let result = Promise.all(arrayPromise);
     // let resultBaiCao = await playBaiCao(resultLogin);
-     console.log(resultLode);
+     
 }
 let runPlayGame = async (userinfo)=>{
     let {iduser,password,numberbaicao,numberlode,baicao,lode} = userinfo ;
@@ -34,7 +35,7 @@ let runPlayGame = async (userinfo)=>{
         console.log(resultBaiCao);
     }
     if(lode){
-        let resultLode = await requestlode(resultLogin);
+        let resultLode = await requestlode(resultLogin,numberlode);
         console.log(resultLode);
     }
 }
