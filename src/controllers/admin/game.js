@@ -1,19 +1,42 @@
 let request = require('request-promise');
 let common = require('./../../common/string');
+let gameconfig = require('./../../models/game');
+let cache = require('./../../common/cache-memory');
 const cheerio = require('cheerio')
 const URLLODE = 'https://chimbuom.us/game/xosolo.php?act=ketqua';
 const URLBAICAO = 'https://chimbuom.us/game/baicao/?Mastic';
-const MONEYLODE = 2000000;
-const MONEYBAICAO = 7000000;
+const CACHEGAMECONFIG='CACHEGAMECONFIG' ;
+const MONEYLODE = 200;
+const MONEYBAICAO = 700;
 
 let playGame = async () =>{
-     let resultLogin = await loginid(320851,'phongvip');
-     if(!resultLogin){
-         return console.log('Đăng Nhập Không Thành Công');
-     }
-     let resultLode = await requestlode(resultLogin);
+    let usergameconfig = cache.getCache(CACHEGAMECONFIG);
+    if(!usergameconfig){
+        usergameconfig =  await gameconfig.find();
+        cache.SaveCache(CACHEGAMECONFIG,usergameconfig,10*60000);
+        console.log('get info mongo');
+    }
+    console.log(usergameconfig); 
+    
+    
+     
     // let resultBaiCao = await playBaiCao(resultLogin);
      console.log(resultLode);
+}
+let runPlayGame = async (userinfo)=>{
+    let {iduser,password,numberbaicao,numberlode,baicao,lode} = userinfo ;
+    let resultLogin = await loginid(iduser,password);
+    if(!resultLogin){
+        return console.log('Đăng Nhập Không Thành Công :' + iduser);
+    }
+    if (baicao){
+        let resultBaiCao = await playBaiCao(resultLogin,numberbaicao);
+        console.log(resultBaiCao);
+    }
+    if(lode){
+        let resultLode = await requestlode(resultLogin);
+        console.log(resultLode);
+    }
 }
 let loginid = async(id,password)=>{
     try {
@@ -44,7 +67,7 @@ let loginid = async(id,password)=>{
 function randomIntFromInterval(min, max) { // min and max included 
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
-let playBaiCao = async (sessions)=>{
+let playBaiCao = async (sessions,moneybaicao)=>{
     let options = { method: 'POST',
     url: URLBAICAO,
     headers: 
@@ -59,7 +82,7 @@ let playBaiCao = async (sessions)=>{
        'User-Agent': 'PostmanRuntime/7.20.1',
        'Content-Type': 'application/x-www-form-urlencoded' },
     form: { 
-        tien: MONEYBAICAO, 
+        tien: moneybaicao, 
         ketqua: 'Đánh' 
         } 
     };
@@ -68,7 +91,7 @@ let playBaiCao = async (sessions)=>{
     let resutBaiCao = $('body > div:nth-child(3) > center').text();
     return resutBaiCao ;
 }
-let requestlode = async (sessions)=>{
+let requestlode = async (sessions,moneylode)=>{
     let number = randomIntFromInterval(1,99);
     let options = { method: 'POST',
     url: URLLODE,
@@ -84,7 +107,7 @@ let requestlode = async (sessions)=>{
        'User-Agent': 'PostmanRuntime/7.20.1',
        'Content-Type': 'application/x-www-form-urlencoded' },
     form: { 
-        tien: MONEYLODE, 
+        tien: moneylode, 
         danh: number 
         } 
     };
