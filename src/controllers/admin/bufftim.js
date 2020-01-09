@@ -84,6 +84,7 @@ let loginid = async(id,password)=>{
     let result = await request(options);
     return false ;
     } catch (error) {
+       
         if(error.statusCode){
             let result = error.response.headers['set-cookie'].join(";");
             let cookie = common.parseCookie(result);
