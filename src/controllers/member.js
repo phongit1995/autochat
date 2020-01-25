@@ -1,6 +1,7 @@
 var request = require('request-promise');
 let common = require('../common/string');
 let userModel = require('../models/userInfo');
+let listAdmin = require('./../models/listadmin');
 let Cache = require('../common/cache-memory');
 require('dotenv').config();
 const cherrio = require('cheerio');
@@ -39,8 +40,20 @@ let index =  async (req,res)=>{
 let SendAllMessage = async (req,res)=>{
     let type = req.body.type ;
     let listidOnline = await listidOnlineByTye(req.session.user.cookie,type);
-    console.log(listidOnline);
-
+    // console.log(" Danh Sách OnLine");
+    // console.log(listidOnline.length);
+    let listadmins = await listAdmin.find();
+    console.log(listadmins);
+    listadmins.forEach((value,index)=>{
+        // console.log(value.id);
+        // console.log(listidOnline.includes(value.id));
+        if(listidOnline.includes( value.id.toString())){
+            // console.log('tìm Thấy admins');
+            listidOnline=listidOnline.filter(e => e != value.id)
+        }
+    })
+    // console.log(" Danh Sách OnLine sau Khi Check");
+    // console.log(listidOnline.length);
     for(let i=0;i<listidOnline.length;i++){
         (function(index) {
             setTimeout(  async()=>{
