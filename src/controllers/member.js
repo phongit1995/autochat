@@ -141,11 +141,12 @@ let listidOnlineByTye  = async (cookie,type)=>{
         }
     }
     let result = await request(optionlogin);
-  
+     console.log(result);
     let $ = cherrio.load(result);
     
-    let page = $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text() ;
-
+    //let page = $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text() ;
+    var page = $('body > div:nth-child(4) > a:nth-child(5)').text();
+    console.log(page);
     console.log("Số Page:" + page);
     let arrayPromiess = [];
     let listLink = [];

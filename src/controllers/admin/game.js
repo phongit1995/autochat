@@ -13,7 +13,7 @@ let playGame = async () =>{
     if(!usergameconfig){
         usergameconfig =  await gameconfig.find();
         cache.SaveCache(CACHEGAMECONFIG,usergameconfig,TIMERESET*60000);
-        console.log('get info mongo');
+        // console.log('get info mongo');
     }
     let arrayPromise = usergameconfig.map((item)=>{
         return  runPlayGame(item);
@@ -25,7 +25,7 @@ let playGame = async () =>{
 }
 let runPlayGame = async (userinfo)=>{
     let {iduser,password,numberbaicao,numberlode,baicao,lode} = userinfo ;
-    console.log(iduser,password,numberbaicao,numberlode,baicao,lode);
+    // console.log(iduser,password,numberbaicao,numberlode,baicao,lode);
     let resultLogin = await loginid(iduser,password);
     if(!resultLogin){
         return console.log('Đăng Nhập Không Thành Công :' + iduser);
@@ -34,11 +34,11 @@ let runPlayGame = async (userinfo)=>{
     if (baicao){
         console.log("Danh bai cao");
         let resultBaiCao = await playBaiCao(resultLogin,numberbaicao);
-        console.log(resultBaiCao);
+        // console.log(resultBaiCao);
     }
     if(lode){
         let resultLode = await requestlode(resultLogin,numberlode);
-        console.log(resultLode);
+        // console.log(resultLode);
     }
 }
 let loginid = async(id,password)=>{
@@ -57,7 +57,7 @@ let loginid = async(id,password)=>{
               }
         } ;
     let result = await request(options);
-    console.log(result);
+    // console.log(result);
     return false ;
     } catch (error) {
         if(error.statusCode){
