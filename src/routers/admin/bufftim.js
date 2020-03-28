@@ -15,7 +15,6 @@ router.post('/checkUser',async(req,res)=>{
     } catch (error) {
         return res.json({error:error})
     }
-    
 })
 router.post('/sendtim',async(req,res)=>{
     try {
