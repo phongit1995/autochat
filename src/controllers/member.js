@@ -145,7 +145,7 @@ let listidOnlineByTye  = async (cookie,type)=>{
     let $ = cherrio.load(result);
     
     //let page = $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text() ;
-    var page = $('body > div:nth-child(4) > a:nth-child(5)').text();
+    var page = $('#container > div:nth-child(17) > a:nth-child(5)').text();
     console.log(page);
     console.log("Số Page:" + page);
     let arrayPromiess = [];
@@ -323,13 +323,13 @@ let InfoUser =  async(cookie)=>{
     let obj = {} ;
     obj.cookie = cookie ;
     let $ = cherrio.load(result);
-    let username = $("#container > div.menu > table > tbody > tr > td:nth-child(2) > b > font").text();
+    let username = $("#container > div.menu > table > tbody > tr > td:nth-child(2) > font.level40").text();
     obj.username = username ;
     let gender = $("body > div:nth-child(10) > font:nth-child(2)").text();
     obj.gender = gender;
-    let lever = $("body > div:nth-child(10) > font:nth-child(5)").text();
+    let lever = $("#container > div:nth-child(6) > table > tbody > tr > td:nth-child(2) > font:nth-child(10)").text();
     obj.lever = lever ;
-    let taisan = $("body > div:nth-child(10) > font:nth-child(9)").text();
+    let taisan = $("#container > div.menu > table > tbody > tr > td:nth-child(2) > font:nth-child(4)").text();
     obj.taisan= taisan;
     let Idweb = $("body > div:nth-child(4) > div > span:nth-child(2) > font").text();
     obj.Idweb = Idweb ;
