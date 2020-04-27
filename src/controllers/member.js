@@ -132,7 +132,8 @@ let listidOnlineByTye  = async (cookie,type)=>{
     }
     let optionlogin = {
         method:"get",
-        uri:"https://gaubong.us/users/online.php",
+        // uri:"https://gaubong.us/users/online.php",
+         uri:"https://gaubong.us/users/online.php?page=1",
         headers:{
             'Connection': 'keep-alive',
             'Accept-Encoding': '',
@@ -143,9 +144,8 @@ let listidOnlineByTye  = async (cookie,type)=>{
     let result = await request(optionlogin);
      console.log(result);
     let $ = cherrio.load(result);
-    
     //let page = $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text() ;
-    var page = $('#container > div:nth-child(17) > a:nth-child(5)').text();
+    var page = $('#container > div:nth-child(6) > a:nth-child(5)').text();
     console.log(page);
     console.log("Số Page:" + page);
     let arrayPromiess = [];
