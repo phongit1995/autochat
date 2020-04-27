@@ -10,7 +10,7 @@ socket.on("server-send-status-send-message",(data)=>{
 
     if(result.status=="200" && result.error==""){
             message= `<div class="message-sucess">Gửi Thành Công Tới <span class="idmessage"> ${ data.id} <span> 
-                <a href="https://chimbuom.us/mail/index.php?act=write&id=${data.id}" target="__blank">Chi Tiết</a>
+                <a href="https://gaubong.us/mail/index.php?act=write&id=${data.id}" target="__blank">Chi Tiết</a>
             </div>` ;
     }
     else{

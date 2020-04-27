@@ -36,7 +36,7 @@ module.exports = {
 let login = async (username,password)=>{
     try {
         var options = { method: 'POST',
-        url: 'https://chimbuom.us/login.php',
+        url: 'https://gaubong.us/login.php',
         headers: 
         { 'Postman-Token': '1ce33c15-c7e6-4724-8cf2-92640f816c26',
             'cache-control': 'no-cache',
@@ -58,7 +58,7 @@ let login = async (username,password)=>{
 let InfoUser =  async(cookie)=>{
     let optionlogin = {
         method:"get",
-        uri:"https://chimbuom.us/users/profile.php",
+        uri:"https://gaubong.us/users/profile.php",
         headers:{
         cookie:cookie,
         'Connection': 'keep-alive',

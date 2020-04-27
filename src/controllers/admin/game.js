@@ -3,8 +3,8 @@ let common = require('./../../common/string');
 let gameconfig = require('./../../models/game');
 let cache = require('./../../common/cache-memory');
 const cheerio = require('cheerio')
-const URLLODE = 'https://chimbuom.us/game/xosolo.php?act=ketqua';
-const URLBAICAO = 'https://chimbuom.us/game/baicao/?Mastic';
+const URLLODE = 'https://gaubong.us/game/xosolo.php?act=ketqua';
+const URLBAICAO = 'https://gaubong.us/game/baicao/?Mastic';
 const CACHEGAMECONFIG='CACHEGAMECONFIG' ;
 const TIMERESET = 5 ;
 
@@ -45,7 +45,7 @@ let loginid = async(id,password)=>{
     try {
         var options = { 
             method: 'POST',
-            url: 'https://chimbuom.us/loginid.php',
+            url: 'https://gaubong.us/loginid.php',
         headers: 
             { 'Postman-Token': '1ce33c15-c7e6-4724-8cf2-92640f816c26',
             'cache-control': 'no-cache',
@@ -60,6 +60,7 @@ let loginid = async(id,password)=>{
     // console.log(result);
     return false ;
     } catch (error) {
+        console.log(error.response);
         if(error.statusCode){
             let result = error.response.headers['set-cookie'].join(";");
             let cookie = common.parseCookie(result);
@@ -80,7 +81,7 @@ let playBaiCao = async (sessions,moneybaicao)=>{
        Connection: 'keep-alive',
        Cookie: sessions,
        'Content-Length': '19',
-       Host: 'chimbuom.us',
+       Host: 'gaubong.us',
        'Postman-Token': 'd178978c-92d7-4930-b508-f1fbfdad88d1,d7017dcc-4458-49f2-9013-1907a3743620',
        'Cache-Control': 'no-cache',
        Accept: '*/*',
@@ -107,7 +108,7 @@ let requestlode = async (sessions,moneylode)=>{
        Connection: 'keep-alive',
        Cookie: sessions,
        'Content-Length': '19',
-       Host: 'chimbuom.us',
+       Host: 'gaubong.us',
        'Postman-Token': 'd178978c-92d7-4930-b508-f1fbfdad88d1,d7017dcc-4458-49f2-9013-1907a3743620',
        'Cache-Control': 'no-cache',
        Accept: '*/*',

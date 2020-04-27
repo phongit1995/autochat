@@ -11,7 +11,7 @@ let index =  async (req,res)=>{
         
         let optionlogin = {
             method:"get",
-            uri:"https://chimbuom.us/",
+            uri:"https://gaubong.us/",
             headers:{
                 cookie:req.session.user.cookie,
                 'Connection': 'keep-alive',
@@ -71,7 +71,7 @@ let  getnumberOnline = async (req,res)=>{
     
     let optionlogin = {
         method:"get",
-        uri:"https://chimbuom.us/",
+        uri:"https://gaubong.us/",
         headers:{
             'Connection': 'keep-alive',
             'Accept-Encoding': '',
@@ -89,7 +89,7 @@ let infoAllfemaleOnline = async (cookie)=>{
     console.log(cookie);
     let optionlogin = {
         method:"get",
-        uri:"https://chimbuom.us/online.html",
+        uri:"https://gaubong.us/online.html",
         headers:{
             'Connection': 'keep-alive',
             'Accept-Encoding': '',
@@ -132,7 +132,7 @@ let listidOnlineByTye  = async (cookie,type)=>{
     }
     let optionlogin = {
         method:"get",
-        uri:"https://chimbuom.us/users/online.php",
+        uri:"https://gaubong.us/users/online.php",
         headers:{
             'Connection': 'keep-alive',
             'Accept-Encoding': '',
@@ -167,7 +167,7 @@ let listidOnlineByTye  = async (cookie,type)=>{
 let numbermaleOnline = async ()=>{
     let optionlogin = {
         method:"get",
-        uri:"https://chimbuom.us/online.html",
+        uri:"https://gaubong.us/online.html",
         headers:{
             'Connection': 'keep-alive',
             'Accept-Encoding': '',
@@ -183,7 +183,7 @@ let numbermaleOnline = async ()=>{
 let idfemaleOnline = async (cookie,page)=>{
     let optionlogin = {
         method:"get",
-        uri:`https://chimbuom.us/users/online.php?page=${page}#post1`,
+        uri:`https://gaubong.us/users/online.php?page=${page}#post1`,
         headers:{
             'Connection': 'keep-alive',
             'Accept-Encoding': '',
@@ -213,7 +213,7 @@ let idfemaleOnline = async (cookie,page)=>{
 let getInfoMember = async (cookie,id)=>{
     let optionlogin = {
         method:"get",
-        uri:`https://chimbuom.us/users/profile.php?user=${id}`,
+        uri:`https://gaubong.us/users/profile.php?user=${id}`,
         headers:{
             'Connection': 'keep-alive',
             'Accept-Encoding': '',
@@ -235,15 +235,15 @@ let sendMessageToUser = async (cookie,id,message)=>{
     console.log(cookie, id ,message);
     let optionlogin = {
         method:"post",
-        uri:`https://chimbuom.us/mail/send_mail.php?id=${id}`,
+        uri:`https://gaubong.us/mail/send_mail.php?id=${id}`,
         headers:{
-            'Host': 'chimbuom.us',
+            'Host': 'gaubong.us',
             'Accept': '*/*',
             'Connection': 'keep-alive',
             'Accept-Language': 'en-US,en;q=0.8',
-            'origin':'https://chimbuom.us',
+            'origin':'https://gaubong.us',
             'cookie':cookie,
-            'referer':`https://chimbuom.us/mail/index.php?act=write&id=${id}` ,
+            'referer':`https://gaubong.us/mail/index.php?act=write&id=${id}` ,
             'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36'
         },
@@ -261,7 +261,7 @@ let sendMessageToUser = async (cookie,id,message)=>{
 let login = async (req,res)=>{
     try {
         var options = { method: 'POST',
-        url: 'https://chimbuom.us/login.php',
+        url: 'https://gaubong.us/login.php',
         headers: 
         { 'Postman-Token': '1ce33c15-c7e6-4724-8cf2-92640f816c26',
             'cache-control': 'no-cache',
@@ -311,7 +311,7 @@ module.exports = {index,SendAllMessage,login,logout}
 let InfoUser =  async(cookie)=>{
     let optionlogin = {
         method:"get",
-        uri:"https://chimbuom.us/users/profile.php",
+        uri:"https://gaubong.us/users/profile.php",
         headers:{
         cookie:cookie,
         'Connection': 'keep-alive',

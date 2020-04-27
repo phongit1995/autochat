@@ -21,7 +21,7 @@ let BuffLikeUser =async(idUser,password,idTo)=>{
     }else
     {
         let options = {
-        url:`https://chimbuom.us/tool/image-upload/like.php?id=${idTo}&page=1`,
+        url:`https://gaubong.us/tool/image-upload/like.php?id=${idTo}&page=1`,
         method:'get',
         headers:{
             'Connection': 'keep-alive',
@@ -44,7 +44,7 @@ let loginid = async(id,password)=>{
     try {
         var options = { 
             method: 'POST',
-            url: 'https://chimbuom.us/loginid.php',
+            url: 'https://gaubong.us/loginid.php',
         headers: 
             { 'Postman-Token': '1ce33c15-c7e6-4724-8cf2-92640f816c26',
             'cache-control': 'no-cache',
@@ -58,7 +58,6 @@ let loginid = async(id,password)=>{
     let result = await request(options);
     return false ;
     } catch (error) {
-       
         if(error.statusCode){
             let result = error.response.headers['set-cookie'].join(";");
             let cookie = common.parseCookie(result);

@@ -47,7 +47,7 @@ let BuffTimUser =async(idUser,password,idTo)=>{
     }else
     {
         let options = {
-        url:`https://chimbuom.us/users/like.php?id=${idTo}`,
+        url:`https://gaubong.us/users/like.php?id=${idTo}`,
         method:'get',
         headers:{
             'Connection': 'keep-alive',
@@ -70,7 +70,7 @@ let loginid = async(id,password)=>{
     try {
         var options = { 
             method: 'POST',
-            url: 'https://chimbuom.us/loginid.php',
+            url: 'https://gaubong.us/loginid.php',
         headers: 
             { 'Postman-Token': '1ce33c15-c7e6-4724-8cf2-92640f816c26',
             'cache-control': 'no-cache',

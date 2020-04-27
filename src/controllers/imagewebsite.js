@@ -20,7 +20,7 @@ let dowLoadImage = async (link)=>{
     return result ;
 }
 let dowload =  async (req,res)=>{
-     let result =  await dowLoadImage("https://chimbuom.us/tool/image-upload/files/anh_1568934097.jpg");
+     let result =  await dowLoadImage("https://gaubong.us/tool/image-upload/files/anh_1568934097.jpg");
     
      res.send(result);
     
