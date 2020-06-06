@@ -145,7 +145,7 @@ let listidOnlineByTye  = async (cookie,type)=>{
      console.log(result);
     let $ = cherrio.load(result);
     //let page = $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text() ;
-    var page = $('#container > div:nth-child(6) > a:nth-child(5)').text();
+    var page = $('#container > div:nth-child(7) > a:nth-child(5)').text();
     console.log(page);
     console.log("Số Page:" + page);
     let arrayPromiess = [];
