@@ -145,7 +145,9 @@ let listidOnlineByTye  = async (cookie,type)=>{
      console.log(result);
     let $ = cherrio.load(result);
     //let page = $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text() ;
-    var page = $('#container > div:nth-child(8) > a:nth-child(5)').text();
+
+    
+    var page = $('body > div:nth-child(20) > a:nth-child(5)').text();
     console.log(page);
     console.log("Số Page:" + page);
     let arrayPromiess = [];
@@ -194,7 +196,7 @@ let idfemaleOnline = async (cookie,page)=>{
     let arrayid= [];
     let result = await request(optionlogin);
     let $ = cherrio.load(result);
-    let numberlist1 = $('div.list1 > table > tbody > tr > td:nth-child(2)> a:nth-child(2)');
+    let numberlist1 = $('.list1 > table > tbody > tr > td:nth-child(2) > a');
     console.log('Số Danh Sách' ,numberlist1.length);
       for(let i=0 ;i<numberlist1.length;i++){
          let link = numberlist1[i].attribs.href ;
