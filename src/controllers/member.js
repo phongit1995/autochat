@@ -147,7 +147,7 @@ let listidOnlineByTye  = async (cookie,type)=>{
     //let page = $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text() ;
 
     
-    var page = $('body > div:nth-child(20) > a:nth-child(5)').text();
+    var page = $('body > div:nth-child(10) > a:nth-child(5)').text();
     console.log(page);
     console.log("Số Page:" + page);
     let arrayPromiess = [];
