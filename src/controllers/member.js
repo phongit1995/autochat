@@ -237,7 +237,7 @@ let sendMessageToUser = async (cookie,id,message)=>{
     console.log(cookie, id ,message);
     let optionlogin = {
         method:"post",
-        uri:`https://gaubong.us/mail/send_mail.php?id=${id}`,
+        uri:`https://chimbuom.us/request/?act=send_mail&id=${id}`,
         headers:{
             'Host': 'gaubong.us',
             'Accept': '*/*',
