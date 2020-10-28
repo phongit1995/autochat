@@ -203,12 +203,6 @@ let idfemaleOnline = async (cookie,page)=>{
          console.log( 'link là'  +link);
          arrayid.push(link.slice( link.lastIndexOf("=") +1, link.length));
     }
-//     let numberlist2 = $("#body > div.list2 > table > tbody > tr > td:nth-child(2)> a:nth-child(2)");
-//     for(let i=0 ;i<numberlist2.length;i++){
-       
-//         let link = $("#body > div.list2 > table > tbody > tr > td:nth-child(2)> a:nth-child(2)")[i].attribs.href ;
-//         arrayid.push(link.slice( link.lastIndexOf("=") +1, link.length) );
-//    }
     return arrayid;
 }
 // GET USER MEMBER BY ID
@@ -250,8 +244,7 @@ let sendMessageToUser = async (cookie,id,message)=>{
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36'
         },
         form:{
-            text:message ,
-            token:''
+            text:message 
         }
     }
     let resultRequest = await request(optionlogin);
