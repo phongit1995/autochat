@@ -185,7 +185,7 @@ let numbermaleOnline = async ()=>{
 let idfemaleOnline = async (cookie,page)=>{
     let optionlogin = {
         method:"get",
-        uri:`https://gaubong.us/users/online.php?page=${page}#post1`,
+        uri:`https://gaubong.us/modules/?act=online&gt=nu&page=${page}`,
         headers:{
             'Connection': 'keep-alive',
             'Accept-Encoding': '',
