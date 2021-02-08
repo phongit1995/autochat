@@ -307,12 +307,33 @@ let login = async (req,res)=>{
         
     }
 }
+const getCookieLogin=async(req,res)=>{
+    try {
+        var options = { 
+        method: 'POST',
+        url: 'https://gaubong.us/login.php',
+        headers: 
+        { 'Postman-Token': '1ce33c15-c7e6-4724-8cf2-92640f816c26',
+            'cache-control': 'no-cache',
+            'content-type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' 
+        },
+            formData: { account: req.body.username, password: req.body.password, m: '1' } 
+        } ;
+        let result = await request(options);
+        return res.status(400).json({message:"login fail"});
+    } catch (error) {
+        //console.log(error);
+        let result = error.response.headers['set-cookie'].join(";");
+        let obj = common.parseCookie(result);
+        res.status(200).json({cookie:obj})        
+    }
+}
 // Logout User
 let logout = (req,res)=>{
     req.session.destroy();
     res.redirect("/");
 }
-module.exports = {index,SendAllMessage,login,logout} 
+module.exports = {index,SendAllMessage,login,logout,getCookieLogin} 
 // Get Info User Login 
 let InfoUser =  async(cookie)=>{
     let optionlogin = {

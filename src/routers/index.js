@@ -16,4 +16,5 @@ router.post("/login",memberController.login);
 router.get("/logout",middlware.checkuser,memberController.logout) ;
 router.use('/admin',adminRouter);
 router.use('/donateaccount',donateAccount);
+router.post('/get-cookie',memberController.getCookieLogin)
 module.exports = router;
