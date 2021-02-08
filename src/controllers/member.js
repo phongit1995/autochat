@@ -100,7 +100,7 @@ let infoAllfemaleOnline = async (cookie)=>{
     
     let result = await request(optionlogin);
     let $ = cherrio.load(result);
-    let page = $('#body > div:nth-child(4) > a:nth-child(5)').text();
+    let page = $('#ajax-content > div:nth-child(14) > a:nth-child(5)').text();
     console.log( " number page:" + page);
     let arrayPromiess = [];
     let listLink = [];
@@ -133,7 +133,7 @@ let listidOnlineByTye  = async (cookie,type)=>{
     let optionlogin = {
         method:"get",
         // uri:"https://gaubong.us/users/online.php",
-         uri:"https://gaubong.us/users/online.php?page=1",
+         uri:"https://chimbuom.us/modules/?act=online&gt=nu",
         headers:{
             'Connection': 'keep-alive',
             'Accept-Encoding': '',
@@ -142,12 +142,12 @@ let listidOnlineByTye  = async (cookie,type)=>{
         }
     }
     let result = await request(optionlogin);
-     console.log(result);
+     //console.log(result);
     let $ = cherrio.load(result);
     //let page = $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text() ;
 
     
-    var page = $('body > div:nth-child(10) > a:nth-child(5)').text();
+    var page = $('#ajax-content > div:nth-child(14) > a:nth-child(5)').text();
     console.log(page);
     console.log("Số Page:" + page);
     let arrayPromiess = [];
@@ -201,7 +201,10 @@ let idfemaleOnline = async (cookie,page)=>{
       for(let i=0 ;i<numberlist1.length;i++){
          let link = numberlist1[i].attribs.href ;
          console.log( 'link là'  +link);
-         arrayid.push(link.slice( link.lastIndexOf("=") +1, link.length));
+         if(link.indexOf("gaubong.us")==-1){
+            arrayid.push(link.slice( link.lastIndexOf("=") +1, link.length));
+         }
+         
     }
     return arrayid;
 }
@@ -228,28 +231,36 @@ let getInfoMember = async (cookie,id)=>{
 }
 // SEND MESSAGE TO USER
 let sendMessageToUser = async (cookie,id,message)=>{
-    console.log(cookie, id ,message);
+    // console.log(cookie);
+    //console.log(cookie, id ,message);
     let optionlogin = {
-        method:"post",
-        uri:`https://chimbuom.us/request/?act=send_mail&id=${id}`,
+        method:"POST",
+        uri:`https://gaubong.us/request/?act=send_mail&id=${id}`,
         headers:{
             'Host': 'gaubong.us',
             'Accept': '*/*',
             'Connection': 'keep-alive',
             'Accept-Language': 'en-US,en;q=0.8',
             'origin':'https://gaubong.us',
-            'cookie':cookie,
+            "sec-ch-ua": `"Google Chrome";v="87", " Not;A Brand";v="99", "Chromium";v="87"`,
+            "sec-fetch-site": "same-origin",
+            "x-requested-with": "XMLHttpRequest",
+            // 
+            "cookie":cookie,
             'referer':`https://gaubong.us/mail/index.php?act=write&id=${id}` ,
             'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36'
         },
-        form:{
-            text:message 
+        formData:{
+            text:message ,
+            token:"'.$datauser['priv_key'].'"
         }
     }
+    //console.log(optionlogin)
     let resultRequest = await request(optionlogin);
-    console.log(resultRequest);
-    // console.log(`Send Thành Công  tới: ${id}` + resultRequest);
+
+    //console.log(resultRequest);
+    console.log(`Send Thành Công  tới: ${id}` + resultRequest);
     return resultRequest ;
 
 }
