@@ -147,7 +147,15 @@ let listidOnlineByTye  = async (cookie,type)=>{
     //let page = $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text() ;
 
     
-    var page = $('#ajax-content > div:nth-child(14) > a:nth-child(5)').text();
+    var page =$('#ajax-content > div:nth-child(4) > a:nth-child(5)').text()|| $('#ajax-content > div:nth-child(14) > a:nth-child(5)').text(); 
+    
+    console.log("page" +page);
+    if(isNaN(parseInt(page))){
+        // console.log("Parse fail");
+        // console.log("page" + $('#ajax-content > div:nth-child(16) > a:nth-child(4)').text());
+        page=$('#ajax-content > div:nth-child(5) > a:nth-child(4)').text() || $('#ajax-content > div:nth-child(14) > a:nth-child(4)').text() ;
+        page =4 ;
+    }
     console.log(page);
     console.log("Số Page:" + page);
     let arrayPromiess = [];
