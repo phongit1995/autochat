@@ -7,34 +7,38 @@ require('dotenv').config();
 const cherrio = require('cheerio');
 let index =  async (req,res)=>{
 
-    try {
-        
-        let optionlogin = {
-            method:"get",
-            uri:"https://gaubong.us/",
-            headers:{
-                cookie:req.session.user.cookie,
-                'Connection': 'keep-alive',
-            'Accept-Encoding': '',
-            'Accept-Language': 'en-US,en;q=0.8'
-            }
-        }
-         let result = await request(optionlogin);
-         let $ = cherrio.load(result);
-         // number online log
-         console.log( $('#container > div.left > a:nth-child(2) > font > font').text());
-         let infomationfemaleOnline = Cache.getCache("LIST_INFO_FEMALE_ONLINE");
-         if(!infomationfemaleOnline){
-            infomationfemaleOnline =  await infoAllfemaleOnline(req.session.user.cookie);
-            Cache.SaveCache("LIST_INFO_FEMALE_ONLINE",infomationfemaleOnline);
-         }
-         console.log(infomationfemaleOnline);
-         res.render('client/index' , {infomationfemaleOnline,user:req.session.user});
+    // try {
+    //     console.log(req.session.user.cookie);
+    //     let optionlogin = {
+    //         method:"get",
+    //         uri:"https://gaubong.us",
+    //         headers:{
+    //             cookie:req.session.user.cookie,
+    //             'Connection': 'keep-alive',
+    //         'Accept-Encoding': '',
+    //         'Accept-Language': 'en-US,en;q=0.8',
+    //         'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36'
+    //         }
+    //     }
+    //      let result = await request(optionlogin);
+    //      let $ = cherrio.load(result);
+    //      // number online log
+    //      console.log( $('#container > div.left > a:nth-child(2) > font > font').text());
+    //      let infomationfemaleOnline = Cache.getCache("LIST_INFO_FEMALE_ONLINE");
+    //      if(!infomationfemaleOnline){
+    //         infomationfemaleOnline =  await infoAllfemaleOnline(req.session.user.cookie);
+    //         Cache.SaveCache("LIST_INFO_FEMALE_ONLINE",infomationfemaleOnline);
+    //      }
+    //      console.log(infomationfemaleOnline);
+    //      res.render('client/index' , {infomationfemaleOnline,user:req.session.user});
         
 
-    } catch (error) {
-        res.render("client/error");
-    }
+    // } catch (error) {
+    //     console.log(error);
+    //     res.render("client/error");
+    // }
+    let infomationfemaleOnline=[]
+    res.render('client/index' , {infomationfemaleOnline,user:req.session.user});
    
 }   
 let SendAllMessage = async (req,res)=>{
@@ -43,6 +47,10 @@ let SendAllMessage = async (req,res)=>{
     // console.log(" Danh Sách OnLine");
     // console.log(listidOnline.length);
     let listadmins = await listAdmin.find();
+    // listadmins =[{
+    //    id:2007
+    // }]
+    console.log("list admin",listadmins);
     console.log(listadmins);
     listadmins.forEach((value,index)=>{
         // console.log(value.id);
@@ -133,7 +141,7 @@ let listidOnlineByTye  = async (cookie,type)=>{
     let optionlogin = {
         method:"get",
         // uri:"https://gaubong.us/users/online.php",
-         uri:"https://chimbuom.us/modules/?act=online&gt=nu",
+         uri:"https://gaubong.us/users/online.php?act=online&gt=nu",
         headers:{
             'Connection': 'keep-alive',
             'Accept-Encoding': '',
@@ -193,7 +201,7 @@ let numbermaleOnline = async ()=>{
 let idfemaleOnline = async (cookie,page)=>{
     let optionlogin = {
         method:"get",
-        uri:`https://gaubong.us/modules/?act=online&gt=nu&page=${page}`,
+        uri:`https://gaubong.us/users/online.php?gt=nu&tinhthanh=&page=${page}`,
         headers:{
             'Connection': 'keep-alive',
             'Accept-Encoding': '',
@@ -282,11 +290,10 @@ let login = async (req,res)=>{
             'content-type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' },
             formData: { account: req.body.username, password: req.body.password, m: '1' } 
         } ;
-    let result = await request(options);
-    res.redirect("/login");
+        let result = await request(options);
+        res.redirect("/login");
     } catch (error) {
         let result = error.response.headers['set-cookie'].join(";");
-        console.log(result);
         let obj = common.parseCookie(result);
         let userinfo = await InfoUser(obj);
         let userdb = await userModel.findUserByUserName(req.body.username.toLowerCase());
