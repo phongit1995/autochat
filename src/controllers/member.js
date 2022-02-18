@@ -66,11 +66,16 @@ let SendAllMessage = async (req,res)=>{
     for(let i=0;i<listidOnline.length;i++){
         (function(index) {
             setTimeout(  async()=>{
-               let resultrequest = await  sendMessageToUser(req.session.user.cookie,listidOnline[index],req.body.message);
-               let obj = {};
-               obj.id = listidOnline[index];
-               obj.result = resultrequest;
-               req.io.sockets.emit("server-send-status-send-message",obj);
+                try {
+                    let resultrequest = await  sendMessageToUser(req.session.user.cookie,listidOnline[index],req.body.message);
+                    let obj = {};
+                    obj.id = listidOnline[index];
+                    obj.result = resultrequest;
+                    req.io.sockets.emit("server-send-status-send-message",obj);
+                } catch (error) {
+                    req.io.sockets.emit("server-send-status-send-message",{});
+                }
+               
             }, i * 5500);
         })(i);
     }
