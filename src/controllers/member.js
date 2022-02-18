@@ -43,9 +43,10 @@ let index =  async (req,res)=>{
 }   
 let SendAllMessage = async (req,res)=>{
     let type = req.body.type ;
+    console.log(type);
     let listidOnline = await listidOnlineByTye(req.session.user.cookie,type);
-    // console.log(" Danh Sách OnLine");
-    // console.log(listidOnline.length);
+    console.log(" Danh Sách OnLine");
+    console.log(listidOnline.length);
     let listadmins = await listAdmin.find();
     // listadmins =[{
     //    id:2007
@@ -141,7 +142,7 @@ let listidOnlineByTye  = async (cookie,type)=>{
     let optionlogin = {
         method:"get",
         // uri:"https://gaubong.us/users/online.php",
-         uri:"https://gaubong.us/users/online.php?act=online&gt=nu",
+         uri:"https://gaubong.us/users/online/nu.php",
         headers:{
             'Connection': 'keep-alive',
             'Accept-Encoding': '',
@@ -150,7 +151,7 @@ let listidOnlineByTye  = async (cookie,type)=>{
         }
     }
     let result = await request(optionlogin);
-     //console.log(result);
+     console.log(result);
     let $ = cherrio.load(result);
     //let page = $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text() ;
 
@@ -201,7 +202,7 @@ let numbermaleOnline = async ()=>{
 let idfemaleOnline = async (cookie,page)=>{
     let optionlogin = {
         method:"get",
-        uri:`https://gaubong.us/users/online.php?gt=nu&tinhthanh=&page=${page}`,
+        uri:`https://gaubong.us/users/online/nu.php?page=${page}`,
         headers:{
             'Connection': 'keep-alive',
             'Accept-Encoding': '',
@@ -212,7 +213,7 @@ let idfemaleOnline = async (cookie,page)=>{
     let arrayid= [];
     let result = await request(optionlogin);
     let $ = cherrio.load(result);
-    let numberlist1 = $('.list1 > table > tbody > tr > td:nth-child(2) > a');
+    let numberlist1 = $('#ajax-content > div > table > tbody > tr > td:nth-child(2) > a');
     console.log('Số Danh Sách' ,numberlist1.length);
       for(let i=0 ;i<numberlist1.length;i++){
          let link = numberlist1[i].attribs.href ;
@@ -251,7 +252,7 @@ let sendMessageToUser = async (cookie,id,message)=>{
     //console.log(cookie, id ,message);
     let optionlogin = {
         method:"POST",
-        uri:`https://gaubong.us/request/?act=send_mail&id=${id}`,
+        uri:`https://gaubong.us/API/chatbox/mail.php`,
         headers:{
             'Host': 'gaubong.us',
             'Accept': '*/*',
@@ -269,7 +270,7 @@ let sendMessageToUser = async (cookie,id,message)=>{
         },
         formData:{
             text:message ,
-            token:"'.$datauser['priv_key'].'"
+            id:id
         }
     }
     //console.log(optionlogin)
