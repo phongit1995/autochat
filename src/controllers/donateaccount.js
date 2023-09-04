@@ -35,18 +35,20 @@ module.exports = {
 }
 let login = async (username,password)=>{
     try {
-        var options = { method: 'POST',
-        url: 'https://gaubong.us/login.php',
+        var options = { method: 'GET',
+        url: 'https://gaubong.us',
         headers: 
-        { 'Postman-Token': '1ce33c15-c7e6-4724-8cf2-92640f816c26',
+        { 
+            'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
             'cache-control': 'no-cache',
             'content-type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' },
+            'Referer':'https://gaubong.us/auth?m=er&dm=gaubong.us&url=/',
             formData: { account: username, password:password, m: '1' } 
         } ;
     let result = await request(options);
     return false ;
     } catch (error) {
-        console.log(error.statusCode);
+        console.log('error',error);
         if(error.statusCode){
             let result = error.response.headers['set-cookie'].join(";");
             let cookie = common.parseCookie(result);

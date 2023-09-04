@@ -6,9 +6,7 @@ let middlware = require("../middlware/checklogin");
 let adminRouter = require("./admin/index");
 let donateAccount = require("./donateaccount");
 router.get("/", middlware.checkuser, memberController.index);
-router.get("/login", (req, res) => {
-  res.render("client/login");
-});
+router.get("/login", memberController.getLogin);
 // router.post("/",memberController.login);
 router.post(
   "/send-all-message",

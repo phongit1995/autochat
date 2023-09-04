@@ -1,8 +1,11 @@
-var request = require("request-promise");
+var request = require("request-promise").defaults({maxRedirects:20});
 let common = require("../common/string");
 let userModel = require("../models/userInfo");
 let listAdmin = require("./../models/listadmin");
 let Cache = require("../common/cache-memory");
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+puppeteer.use(StealthPlugin());
 require("dotenv").config();
 const cherrio = require("cheerio");
 let index = async (req, res) => {
@@ -53,27 +56,34 @@ let SendAllMessage = async (req, res) => {
   // }]
   console.log("list admin", listadmins);
   let listUserOnline = [];
-  listadmins.forEach((value, index) => {
-    // console.log(value.id);
-    // console.log(listidOnline.includes(value.id));
-    if (!listidOnline.includes(value.id.toString())) {
-      // console.log('tìm Thấy admins');
-      listidOnline = listidOnline.filter((e) => e != value.id);
+  // listadmins.forEach((value, index) => {
+  //   // console.log(value.id);
+  //   // console.log(listidOnline.includes(value.id));
+  //   if (!listidOnline.includes(value.id.toString())) {
+  //     // console.log('tìm Thấy admins');
+  //     listidOnline = listidOnline.filter((e) => e != value.id);
+  //   }
+  // });
+  listidOnline.forEach((user) => {
+    const check = false;
+    let listCheck = listadmins.filter((e) => e.id.toString() == user.toString());
+    if (listCheck.length == 0) {
+      listUserOnline.push(user);
     }
   });
   console.log(" Danh Sách OnLine sau Khi Check");
-  console.log(listidOnline.length);
-  for (let i = 0; i < listidOnline.length; i++) {
+  console.log(listUserOnline.length);
+  for (let i = 0; i < listUserOnline.length; i++) {
     (function (index) {
       setTimeout(async () => {
         try {
           let resultrequest = await sendMessageToUser(
             req.session.user.cookie,
-            listidOnline[index],
+            listUserOnline[index],
             req.body.message
           );
           let obj = {};
-          obj.id = listidOnline[index];
+          obj.id = listUserOnline[index];
           obj.result = resultrequest;
           req.io.sockets.emit("server-send-status-send-message", obj);
         } catch (error) {
@@ -141,65 +151,78 @@ let infoAllfemaleOnline = async (cookie) => {
   console.log(infomation);
   return infomation;
 };
+const deplayTime = (time)=>{
+  return  new Promise(resolve => setTimeout(resolve, time))
+}
 // LIST FEMALE ONLINE SEND MESSAGE
 let listidOnlineByTye = async (cookie, type) => {
-  if (type == 1) {
-    cookie += "sex=2";
-  } else if (type == 2) {
-    cookie += "sex=1";
+  try {
+    if (type == 1) {
+      cookie += "sex=2";
+    } else if (type == 2) {
+      cookie += "sex=1";
+    }
+    let optionlogin = {
+      method: "get",
+      // uri:"https://gaubong.us/users/online.php",
+      uri: "https://gaubong.us/users/index.php?act=online&mod=nu",
+      headers: {
+        Connection: "keep-alive",
+        "Accept-Encoding": "",
+        "Accept-Language": "en-US,en;q=0.8",
+        "user-agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36",
+        cookie: cookie,
+      },
+    };
+    let result = await request(optionlogin);
+    console.log(result);
+    let $ = cherrio.load(result);
+    //let page = $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text() ;
+  
+    var page =
+      $("#ajax-content > div:nth-child(4) > a:nth-child(5)").text() ||
+      $("#ajax-content > div:nth-child(14) > a:nth-child(5)").text();
+  
+    console.log("page" + page);
+    if (isNaN(parseInt(page))) {
+      // console.log("Parse fail");
+      // console.log("page" + $('#ajax-content > div:nth-child(16) > a:nth-child(4)').text());
+      page =
+        $("#ajax-content > div:nth-child(5) > a:nth-child(4)").text() ||
+        $("#ajax-content > div:nth-child(14) > a:nth-child(4)").text();
+      page = 4;
+    }
+    console.log(page);
+    console.log("Số Page:" + page);
+    let arrayPromiess = [];
+    let listLink = [];
+    for (let i = 1; i <= page; i++) {
+      arrayPromiess.push(idfemaleOnline(cookie, i));
+      const data = await idfemaleOnline(cookie, i);
+      data.forEach((link) => {
+        listLink.push(link);
+      });
+      await deplayTime(500)
+    }
+    // let resultPromise = await Promise.all(arrayPromiess);
+    // resultPromise.forEach((item) => {
+    //   item.forEach((link) => {
+    //     listLink.push(link);
+    //   });
+    // });
+    console.log(listLink);
+    return listLink;
+  } catch (error) {
+    
   }
-  let optionlogin = {
-    method: "get",
-    // uri:"https://gaubong.us/users/online.php",
-    uri: "https://gaubong.us/users/online/nu.php",
-    headers: {
-      Connection: "keep-alive",
-      "Accept-Encoding": "",
-      "Accept-Language": "en-US,en;q=0.8",
-      "user-agent":
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36",
-      cookie: cookie,
-    },
-  };
-  let result = await request(optionlogin);
-  console.log(result);
-  let $ = cherrio.load(result);
-  //let page = $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text() ;
-
-  var page =
-    $("#ajax-content > div:nth-child(4) > a:nth-child(5)").text() ||
-    $("#ajax-content > div:nth-child(14) > a:nth-child(5)").text();
-
-  console.log("page" + page);
-  if (isNaN(parseInt(page))) {
-    // console.log("Parse fail");
-    // console.log("page" + $('#ajax-content > div:nth-child(16) > a:nth-child(4)').text());
-    page =
-      $("#ajax-content > div:nth-child(5) > a:nth-child(4)").text() ||
-      $("#ajax-content > div:nth-child(14) > a:nth-child(4)").text();
-    page = 4;
-  }
-  console.log(page);
-  console.log("Số Page:" + page);
-  let arrayPromiess = [];
-  let listLink = [];
-  for (let i = 1; i <= page; i++) {
-    arrayPromiess.push(idfemaleOnline(cookie, i));
-  }
-  let resultPromise = await Promise.all(arrayPromiess);
-  resultPromise.forEach((item) => {
-    item.forEach((link) => {
-      listLink.push(link);
-    });
-  });
-  console.log(listLink);
-  return listLink;
+  
 };
 // NUMBER MALE ONLINE
 let numbermaleOnline = async () => {
   let optionlogin = {
     method: "get",
-    uri: "https://gaubong.us/online.html",
+    uri: "https://gaubong.us/users/index.php?act=online&mod=nu",
     headers: {
       Connection: "keep-alive",
       "Accept-Encoding": "",
@@ -218,7 +241,7 @@ let numbermaleOnline = async () => {
 let idfemaleOnline = async (cookie, page) => {
   let optionlogin = {
     method: "get",
-    uri: `https://gaubong.us/users/online/nu.php?page=${page}`,
+    uri: `https://gaubong.us/users/index.php?act=online&mod=nu&page=${page}`,
     headers: {
       Connection: "keep-alive",
       "Accept-Encoding": "",
@@ -315,18 +338,52 @@ let sendMessageToUser = async (cookie, id, message) => {
   console.log(`Send Thành Công  tới: ${id}` + resultRequest);
   return resultRequest;
 };
+const getCookieFirstLogin = async (req,res)=>{
+  const browser = await puppeteer.launch({
+    args : ['--no-sandbox', '--disable-setuid-sandbox'],
+    headless: false
+  });
+  const page = await browser.newPage();
+  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36');
+  await page.goto("https://gaubong.us/",{
+        timeout:45000,
+        waitUntil: 'networkidle0'
+  })
+  const cookies = await page.cookies();
+  await page.authenticate();
+  console.log('cookies',cookies);
+  let result ="";
+  for(let cookie of cookies){
+      result+= `${cookie.name}=${cookie.value};` ;
+  }
+  console.log('cookie',result);
+  await browser.close();
+  return result;
+}
+const getLogin = async (req,res)=>{
+  
+  const cookie =  await getCookieFirstLogin();
+  req.session.preCookie = cookie;
+  
+  res.render("client/login");
+}
 let login = async (req, res) => {
+  console.log('req.session.preCookie',req.session.preCookie)
   try {
     var options = {
       method: "POST",
       url: "https://gaubong.us/login.php",
       headers: {
-        "Postman-Token": "1ce33c15-c7e6-4724-8cf2-92640f816c26",
+        "Postman-Token": "f20afd7e-8400-4eb2-8a4d-2b2451b81c73",
         "cache-control": "no-cache",
+        'Connection':'keep-alive',
+        'Host':'gaubong.us',
         "content-type":
           "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
+        'Referer':'https://gaubong.us',
         "user-agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36",
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36",
+          'cookie':req.session.preCookie,
       },
       formData: {
         account: req.body.username,
@@ -337,9 +394,10 @@ let login = async (req, res) => {
     let result = await request(options);
     res.redirect("/login");
   } catch (error) {
+    console.log(error);
     let result = error.response.headers["set-cookie"].join(";");
     console.log("cookie", result);
-    let obj = common.parseCookie(result);
+    let obj = common.parseCookie(req.session.preCookie+result);
     let userinfo = await InfoUser(obj);
     let userdb = await userModel.findUserByUserName(
       req.body.username.toLowerCase()
@@ -462,8 +520,15 @@ let getListUser = async (req, res) => {
       listidOnline = listidOnline.filter((e) => e != value.id);
     }
   });
+  // listidOnline.forEach((user) => {
+  //   const check = false;
+  //   let listCheck = listadmins.filter((e) => e.id.toString() == user.toString());
+  //   if (listCheck.length == 0) {
+  //     listUserOnline.push(user);
+  //   }
+  // });
   console.log(" Danh Sách OnLine sau Khi Check");
-  console.log(listidOnline.length);
+  console.log(listUserOnline.length);
   res.status(200).json({ listData: listidOnline });
 };
 let sendMessageUser = async (req, res) => {
@@ -485,4 +550,5 @@ module.exports = {
   getCookieLogin,
   getListUser,
   sendMessageUser,
+  getLogin,
 };
