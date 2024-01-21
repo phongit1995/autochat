@@ -87,6 +87,7 @@ let SendAllMessage = async (req, res) => {
           obj.result = resultrequest;
           req.io.sockets.emit("server-send-status-send-message", obj);
         } catch (error) {
+          console.log('send message error to user :' ,error)
           req.io.sockets.emit("server-send-status-send-message", {});
         }
       }, i * 12000);
@@ -165,7 +166,7 @@ let listidOnlineByTye = async (cookie, type) => {
     let optionlogin = {
       method: "get",
       // uri:"https://gaubong.us/users/online.php",
-      uri: "https://gaubong.us/users/index.php?act=online&mod=nu",
+      uri: "https://gaubong.us/users/online?mod=girl",
       headers: {
         Connection: "keep-alive",
         "Accept-Encoding": "",
@@ -181,8 +182,8 @@ let listidOnlineByTye = async (cookie, type) => {
     //let page = $('body > div.list1 > div > div > div > div > div > div > div > div > div > div.topmenu > a:nth-child(5)').text() ;
   
     var page =
-      $("#ajax-content > div:nth-child(4) > a:nth-child(5)").text() ||
-      $("#ajax-content > div:nth-child(14) > a:nth-child(5)").text();
+      $("#page_content > div:nth-child(3) > div > a:nth-child(5)").text() ||
+      $("#page_content > div:nth-child(3) > div > a:nth-child(6)").text();
   
     console.log("page" + page);
     if (isNaN(parseInt(page))) {
@@ -241,7 +242,7 @@ let numbermaleOnline = async () => {
 let idfemaleOnline = async (cookie, page) => {
   let optionlogin = {
     method: "get",
-    uri: `https://gaubong.us/users/index.php?act=online&mod=nu&page=${page}`,
+    uri: `https://gaubong.us/users/online?mod=girl&page=${page}`,
     headers: {
       Connection: "keep-alive",
       "Accept-Encoding": "",
@@ -255,7 +256,7 @@ let idfemaleOnline = async (cookie, page) => {
   let result = await request(optionlogin);
   let $ = cherrio.load(result);
   let numberlist1 = $(
-    "#ajax-content > div > table > tbody > tr > td:nth-child(2) > a"
+    ".card-list > table > tbody > tr > td:nth-child(2) > div:nth-child(1) > a"
   );
   console.log("Số Danh Sách", numberlist1.length);
   for (let i = 0; i < numberlist1.length; i++) {
@@ -309,7 +310,7 @@ let sendMessageToUser = async (cookie, id, message) => {
   //console.log(cookie, id ,message);
   let optionlogin = {
     method: "POST",
-    uri: `https://gaubong.us/API/chatbox/mail.php`,
+    uri: `https://gaubong.us/api/mail/write/?id=${id}`,
     headers: {
       Host: "gaubong.us",
       Accept: "*/*",
@@ -328,7 +329,6 @@ let sendMessageToUser = async (cookie, id, message) => {
     },
     formData: {
       text: message + RadomText[Math.floor(Math.random() * RadomText.length)],
-      id: id,
     },
   };
   //console.log(optionlogin)
@@ -372,7 +372,7 @@ let login = async (req, res) => {
   try {
     var options = {
       method: "POST",
-      url: "https://gaubong.us/login.php",
+      url: "https://gaubong.us/login.html?view_as=view_as",
       headers: {
         "Postman-Token": "f20afd7e-8400-4eb2-8a4d-2b2451b81c73",
         "cache-control": "no-cache",
@@ -388,7 +388,7 @@ let login = async (req, res) => {
       formData: {
         account: req.body.username,
         password: req.body.password,
-        mem: "1",
+        mem: "on",
       },
     };
     let result = await request(options);
@@ -428,7 +428,7 @@ const getCookieLogin = async (req, res) => {
   try {
     var options = {
       method: "POST",
-      url: "https://gaubong.us/login.php",
+      url: "https://gaubong.us/login.html?view_as=view_as",
       headers: {
         "Postman-Token": "1ce33c15-c7e6-4724-8cf2-92640f816c26",
         "cache-control": "no-cache",
@@ -438,7 +438,7 @@ const getCookieLogin = async (req, res) => {
       formData: {
         account: req.body.username,
         password: req.body.password,
-        m: "1",
+        m: "on",
       },
     };
     let result = await request(options);
@@ -460,7 +460,7 @@ let logout = (req, res) => {
 let InfoUser = async (cookie) => {
   let optionlogin = {
     method: "get",
-    uri: "https://gaubong.us/users/profile.php",
+    uri: "https://gaubong.us/profile",
     headers: {
       cookie: cookie,
       Connection: "keep-alive",
@@ -540,7 +540,9 @@ let sendMessageUser = async (req, res) => {
       message
     );
     res.status(200).json(result);
-  } catch (error) {}
+  } catch (error) {
+    
+  }
 };
 module.exports = {
   index,
