@@ -341,7 +341,7 @@ let sendMessageToUser = async (cookie, id, message) => {
 const getCookieFirstLogin = async (req,res)=>{
   const browser = await puppeteer.launch({
     args : ['--no-sandbox', '--disable-setuid-sandbox'],
-    headless: false
+    headless: 'new'
   });
   const page = await browser.newPage();
   await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36');
@@ -372,7 +372,7 @@ let login = async (req, res) => {
   try {
     var options = {
       method: "POST",
-      url: "https://gaubong.us/login.html?view_as=view_as",
+      url: "https://gaubong.us/login.html?view_as=json",
       headers: {
         "Postman-Token": "f20afd7e-8400-4eb2-8a4d-2b2451b81c73",
         "cache-control": "no-cache",
@@ -386,6 +386,7 @@ let login = async (req, res) => {
           'cookie':req.session.preCookie,
       },
       formData: {
+        submit:'Login',
         account: req.body.username,
         password: req.body.password,
         mem: "on",
