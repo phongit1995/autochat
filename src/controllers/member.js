@@ -10,6 +10,7 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
 require("dotenv").config();
 const cherrio = require("cheerio");
+const socketClient = require('../socket-client');
 let index = async (req, res) => {
   // try {
   //     console.log(req.session.user.cookie);
@@ -327,7 +328,6 @@ const getDataSendMessage = async (cookie, id) => {
   const csrf_token = dataJson.csrf_token;
   const $ = cherrio.load(dataJson.content);
   const token = $('#submit_mail_write').attr('token');
-  console.log(csrf_token, token);
   return {
     csrf_token,
     token
@@ -338,6 +338,7 @@ let sendMessageToUser = async (cookie, id, message) => {
   //console.log(cookie, id ,message);
   try {
     const dataToken = await getDataSendMessage(cookie, id);
+    console.log('dataToken', dataToken);
     let optionlogin = {
       method: "POST",
       uri: `https://gaubong.us/api/mail/write/post/?id=${id}`,
@@ -356,19 +357,26 @@ let sendMessageToUser = async (cookie, id, message) => {
         "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36",
       },
-      formData: {
-        text: message + RadomText[Math.floor(Math.random() * RadomText.length)],
-        token: dataToken.token,
-        // csrf_token: dataToken.csrf_token,
-      },
+      // formData: {
+      //   text: message + RadomText[Math.floor(Math.random() * RadomText.length)],
+      //   token: dataToken.token,
+      //   csrf_token: dataToken.csrf_token,
+      // },
+      body: `text=${message + RadomText[Math.floor(Math.random() * RadomText.length)]}&reply=&token=${dataToken.token}&csrf_token=null`
     };
     //console.log(optionlogin)
     let resultRequest = await request(optionlogin);
 
     //console.log(resultRequest);
-    console.log(`Send Thành Công  tới: ${id}` + resultRequest);
+    console.log(`Send Thành Công  tới: ${id}` );
+    // console.log(JSON.parse(resultRequest)); 
+    
+    // Gửi token từ kết quả trả về
+    // socketClient.sendMessage('messenger', JSON.parse(resultRequest)?.token);
+    
     return resultRequest;
-  } catch {
+  } catch (error) {
+    console.log('error', error);
     console.log(`Send Thất Bại  tới: ${id}`);
   }
 
@@ -411,7 +419,7 @@ let login = async (req, res) => {
   try {
     var options = {
       method: "POST",
-      url: "https://gaubong.us/login.html",
+      url: "https://gaubong.us/login",
       headers: {
         "Postman-Token": "f20afd7e-8400-4eb2-8a4d-2b2451b81c73",
         "cache-control": "no-cache",
@@ -433,8 +441,8 @@ let login = async (req, res) => {
     let result = await request(options);
     res.redirect("/login");
   } catch (error) {
-    console.log("error",error);
-    let result = error.response.headers["set-cookie"].join(";");
+    console.log(error.response.headers);
+    let result = error.response.headers["set-cookie"]?.join(";");
     console.log("cookie", result);
     let obj = common.parseCookie(req.session.preCookie + result);
     let userinfo = await InfoUser(obj);

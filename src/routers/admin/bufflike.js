@@ -18,6 +18,5 @@ router.post('/sendlike',async (req,res)=>{
         })
     }
     
-    console.log(req.body);
 })
 module.exports = router ;
