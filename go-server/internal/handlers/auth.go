@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/phongit1995/autochat/go-server/internal/models"
 	"github.com/phongit1995/autochat/go-server/internal/services"
@@ -29,13 +30,28 @@ func NewAuthHandler(
 
 // GetLogin handles GET /login - shows login page
 func (h *AuthHandler) GetLogin(c *gin.Context) {
-	// Render login page
+	session := sessions.Default(c)
+	browserSession := session.Get("browser_session")
+	if browserSession != nil {
+		c.Redirect(http.StatusFound, "/")
+		return
+	}
+
+	cookie, err := services.GetCookieFirstLogin()
+	if err != nil {
+		log.Printf("Error getting cookie: %v", err)
+		c.HTML(http.StatusInternalServerError, "login.html", gin.H{
+			"error": "Error getting cookie",
+			"title": "Login",
+		})
+	}
+	session.Set("browser_session", cookie)
+	session.Save()
 	c.HTML(http.StatusOK, "login.html", gin.H{
 		"title": "Login",
 	})
 }
 
-// PostLogin handles POST /login - processes login form
 func (h *AuthHandler) PostLogin(c *gin.Context) {
 	username := strings.TrimSpace(c.PostForm("username"))
 	password := strings.TrimSpace(c.PostForm("password"))
@@ -48,7 +64,6 @@ func (h *AuthHandler) PostLogin(c *gin.Context) {
 		return
 	}
 
-	// Attempt login using browser automation
 	token, err := services.BrowserLoginHandler(username, password)
 	if err != nil {
 		log.Printf("Login failed for user %s: %v", username, err)

@@ -82,11 +82,9 @@ func setupRoutes(r *gin.Engine, authHandler *handlers.AuthHandler, authMiddlewar
 	r.POST("/login", authMiddleware.GuestOnly(), authHandler.PostLogin)
 
 	// Protected routes
-	r.GET("/", authMiddleware.RequireAuth(), func(c *gin.Context) {
-		user := c.MustGet("user").(*services.SessionUser)
+	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{
 			"title": "AutoChat Dashboard",
-			"user":  user,
 		})
 	})
 

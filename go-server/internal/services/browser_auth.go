@@ -1,98 +1,72 @@
 package services
 
 import (
+	"context"
 	"fmt"
-	"log"
 	"net/url"
 	"strings"
 	"time"
 
+	"github.com/chromedp/cdproto/network"
+	"github.com/chromedp/chromedp"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/launcher"
-	"github.com/go-rod/rod/lib/proto"
-	"github.com/go-rod/stealth"
 	"github.com/phongit1995/autochat/go-server/config"
 )
 
-// BrowserLoginData contains login data from browser
-type BrowserLoginData struct {
-	Cookie    string `json:"cookie"`
-	CSRFToken string `json:"csrf_token"`
-}
+func GetCookieFirstLogin() (string, error) {
+	opts := append(chromedp.DefaultExecAllocatorOptions[:],
+		chromedp.Flag("headless", false),
+		chromedp.Flag("disable-gpu", false),
+		chromedp.Flag("no-sandbox", true),
+		chromedp.Flag("disable-dev-shm-usage", true),
+		chromedp.WindowSize(1920, 1080),
+	)
 
-// GetCookieFirstLogin uses Rod to get initial cookie and token
-func GetCookieFirstLogin() (*BrowserLoginData, error) {
-	// Create launcher with options
-	launcher := launcher.New().
-		Headless(true).
-		NoSandbox(true).
-		Set("disable-setuid-sandbox")
+	allocCtx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
+	defer cancel()
 
-	browserURL, err := launcher.Launch()
+	// Tạo browser context
+	ctx, cancel := chromedp.NewContext(allocCtx)
+	defer cancel()
+
+	// Set timeout
+	ctx, cancel = context.WithTimeout(ctx, 30*time.Second)
+	defer cancel()
+
+	var cookies []*network.Cookie
+
+	// Chạy tasks
+	err := chromedp.Run(ctx,
+		// Bật network domain để có thể lấy cookies
+		chromedp.ActionFunc(func(ctx context.Context) error {
+			return network.Enable().Do(ctx)
+		}),
+
+		chromedp.Navigate("https://gaubong.us/"),
+
+		chromedp.WaitVisible("body", chromedp.ByQuery),
+
+		// Lấy cookies
+		chromedp.ActionFunc(func(ctx context.Context) error {
+			var err error
+			cookies, err = network.GetCookies().Do(ctx)
+			return err
+		}),
+	)
+
 	if err != nil {
-		return nil, fmt.Errorf("failed to launch browser: %w", err)
+		return "", fmt.Errorf("lỗi khi chạy chromedp: %w", err)
 	}
 
-	// Create browser instance
-	browser := rod.New().ControlURL(browserURL).MustConnect()
-	defer browser.MustClose()
-
-	// Create page with stealth mode
-	page := stealth.MustPage(browser)
-
-	// Set user agent
-	err = page.SetUserAgent(&proto.NetworkSetUserAgentOverride{
-		UserAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36",
-	})
-	if err != nil {
-		return nil, fmt.Errorf("failed to set user agent: %w", err)
-	}
-
-	// Navigate to page
-	err = page.Navigate("https://gaubong.us/")
-	if err != nil {
-		return nil, fmt.Errorf("failed to navigate: %w", err)
-	}
-
-	// Wait for page load
-	err = page.WaitLoad()
-	if err != nil {
-		return nil, fmt.Errorf("failed to wait for page load: %w", err)
-	}
-
-	// Wait additional time for network idle
-	time.Sleep(2 * time.Second)
-
-	// Get cookies
-	cookies, err := page.Cookies([]string{"https://gaubong.us"})
-	if err != nil {
-		return nil, fmt.Errorf("failed to get cookies: %w", err)
-	}
-
-	// Convert cookies to string
 	var cookieStrings []string
 	for _, cookie := range cookies {
-		cookieStrings = append(cookieStrings, fmt.Sprintf("%s=%s", cookie.Name, cookie.Value))
+		cookieStr := fmt.Sprintf("%s=%s", cookie.Name, cookie.Value)
+		cookieStrings = append(cookieStrings, cookieStr)
 	}
 
-	// Get CSRF token from JavaScript store object
-	var csrfToken string
-	_, err = page.Eval(`() => {
-		if (typeof store !== 'undefined' && store.csrf_token) {
-			return store.csrf_token;
-		}
-		return '';
-	}`, &csrfToken)
-	if err != nil {
-		log.Printf("Warning: Could not get CSRF token: %v", err)
-		csrfToken = ""
-	}
+	cookiesHeader := strings.Join(cookieStrings, "; ")
 
-	return &BrowserLoginData{
-		Cookie:    strings.Join(cookieStrings, "; "),
-		CSRFToken: csrfToken,
-	}, nil
+	return cookiesHeader, nil
 }
 
 // LoginWithBrowser performs login using browser automation

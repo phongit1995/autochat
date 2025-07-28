@@ -12,14 +12,14 @@ import (
 
 // BrowserLoginHandler handles browser login process
 func BrowserLoginHandler(username, password string) (string, error) {
-	// Get initial cookie and token
-	loginData, err := GetCookieFirstLogin()
+	// Get initial cookie
+	cookie, err := GetCookieFirstLogin()
 	if err != nil {
 		return "", fmt.Errorf("failed to get initial cookie: %w", err)
 	}
 
-	// Perform login with browser
-	return LoginWithBrowser(username, password, loginData.Cookie, loginData.CSRFToken)
+	// Perform login with browser (no CSRF token since it's not returned anymore)
+	return LoginWithBrowser(username, password, cookie, "")
 }
 
 // GetUserInfoFromToken extracts user info from JWT token
