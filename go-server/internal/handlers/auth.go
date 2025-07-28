@@ -37,7 +37,7 @@ func (h *AuthHandler) GetLogin(c *gin.Context) {
 		return
 	}
 
-	cookie, err := services.GetCookieFirstLogin()
+	cookie, err := services.GetCookieBrowserLogin()
 	if err != nil {
 		log.Printf("Error getting cookie: %v", err)
 		c.HTML(http.StatusInternalServerError, "login.html", gin.H{
@@ -53,6 +53,14 @@ func (h *AuthHandler) GetLogin(c *gin.Context) {
 }
 
 func (h *AuthHandler) PostLogin(c *gin.Context) {
+
+	session := sessions.Default(c)
+	browserSession := session.Get("browser_session")
+	if browserSession == nil {
+		c.Redirect(http.StatusFound, "/login")
+		return
+	}
+
 	username := strings.TrimSpace(c.PostForm("username"))
 	password := strings.TrimSpace(c.PostForm("password"))
 
@@ -64,7 +72,7 @@ func (h *AuthHandler) PostLogin(c *gin.Context) {
 		return
 	}
 
-	token, err := services.BrowserLoginHandler(username, password)
+	token, err := services.RequestLoginWebsite(username, password, browserSession.(string))
 	if err != nil {
 		log.Printf("Login failed for user %s: %v", username, err)
 		c.HTML(http.StatusUnauthorized, "login.html", gin.H{
